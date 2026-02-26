@@ -26,7 +26,7 @@
         <a href="{{ url_for('nous_soutenir') }}">Nous soutenir</a>
         <a class="pill donate" href="{{ url_for('nous_soutenir') }}">💙 Faire un Don</a>
         <a href="{{ url_for('actus') }}">Actualités</a>
-        <a href="{{ url_for('membres') }}">Espace membres</a>
+        <a href="{{ url_for('member_area') }}">Espace membres</a>
         {% if current_user.is_authenticated %}
           {% if current_user.role == "ADMIN" %}
             <a class="pill" href="{{ url_for('admin_dashboard') }}">Administration</a>
