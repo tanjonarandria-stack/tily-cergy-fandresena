@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Nous soutenir</h1>
+
+<div class="content">
+  <p class="lead">
+    Votre don aide à rendre les activités accessibles : matériel, transports, formations, camps, actions solidaires.
+  </p>
+
+  <div class="grid-2">
+    <div class="panel">
+      <h2>Don (lien externe)</h2>
+      <p class="muted">Tu pourras remplacer ce lien quand tu seras prêt.</p>
+      {% if external_url %}
+        <a class="btn" href="{{ external_url }}" target="_blank" rel="noopener">Faire un don (lien)</a>
+      {% else %}
+        <button class="btn secondary" disabled>Lien de don à venir</button>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2>Don par carte (Stripe)</h2>
+      <p class="muted">Paiement sécurisé via Stripe Checkout (à activer en ajoutant les clés Stripe dans Render/.env).</p>
+
+      <form method="post" action="{{ url_for('donation_checkout') }}" class="don-form">
+        <label>Montant (en €)</label>
+        <input type="number" name="amount_eur" min="1" max="5000" value="10" required />
+        <button class="btn" type="submit">Payer en ligne</button>
+      </form>
+
+      {% if not stripe_public_key %}
+        <p class="muted">⚠️ Stripe n’est pas configuré (STRIPE_PUBLIC_KEY/STRIPE_SECRET_KEY).</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="callout">
+    <h3>Transparence & confiance</h3>
+    <ul>
+      <li>Les dons servent au fonctionnement et aux activités éducatives du groupe.</li>
+      <li>Le budget est suivi par l’équipe (KP) et l’association.</li>
+      <li>Des reçus fiscaux dépendent du canal utilisé, selon configuration.</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

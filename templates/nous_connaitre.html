@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Nous connaître</h1>
+
+<div class="panel" style="margin-top:14px;">
+  <img src="{{ url_for('static', filename='img/groupe.png') }}" alt="Photo de groupe – Tily Cergy Fandresena" style="width:100%; max-height:420px; object-fit:cover; border-radius:16px; border:1px solid var(--border);">
+  <p class="muted" style="margin-top:10px;">Photo de groupe (à publier uniquement avec autorisations, surtout pour les mineurs).</p>
+</div>
+
+
+<div class="content">
+  <p><strong>Tily Cergy FANDRESENA</strong> (Victoire) est un groupe scout à Cergy.</p>
+
+  <div class="callout">
+  <h3>Petit historique de Tily Cergy FANDRESENA (Victoire)</h3>
+  <p>
+    Il était une fois… en 2024, à Cergy, un groupe de personnes motivées (un peu audacieuses, beaucoup enthousiastes 😄)
+    qui ont décidé de faire naître un nouveau groupe scout.<br>
+    Ainsi est né <strong>Tily Cergy FANDRESENA</strong> —
+    <em>FANDRESENA</em>, qui signifie « Victoire » en malgache ✨<br>
+    Une victoire du courage, de la foi et du collectif.
+  </p>
+  <p>
+    Dès le début, le groupe a été et reste <strong>une section vivante de la FPMA Cergy</strong>,
+    avec l’envie de proposer aux jeunes un espace de croissance, de service et de fraternité,
+    enraciné dans la foi chrétienne.
+  </p>
+  <p>
+    Pour bien démarrer l’aventure et ne pas marcher seuls, <strong>Tily Cergy FANDRESENA</strong> est affilié au mouvement
+    <strong>Tily France</strong>, qui nous a accompagnés dans nos premiers pas (et nos premières erreurs aussi 😄)
+    et qui nous accompagne toujours.
+  </p>
+  <p>
+    Puis, en 2025, grande étape et immense joie 🥳 :<br>
+    ➡️ <strong>intégration officielle au sein des EEUdF</strong>.
+  </p>
+  <p><strong>Aujourd’hui, Tily Cergy FANDRESENA est :</strong></p>
+  <ul>
+    <li>un groupe scout <strong>EEUdF</strong>,</li>
+    <li>toujours pleinement <strong>section vivante de la FPMA Cergy</strong> et toujours <strong>Tily France</strong>,</li>
+    <li>ouvert à toutes celles et ceux qui souhaitent partager les valeurs du scoutisme,</li>
+  </ul>
+  <p><strong>Nos valeurs :</strong></p>
+  <p>
+    🌿 l’entraide<br>
+    🔥 l’engagement<br>
+    🧭 le service<br>
+    ⛺ la vie en équipe<br>
+    le tout sur une base de valeurs chrétiennes, fraternelles, ouvertes et tournées vers les autres.
+  </p>
+  <p>
+    Un groupe encore jeune, plein d’énergie, perfectible (comme tout bon groupe scout 😉),
+    mais surtout porté par l’espérance, la foi et la joie de marcher ensemble vers la Victoire : <strong>FANDRESENA</strong> !
+  </p>
+</div>
+
+
+  <h2>Nos branches</h2>
+  <ul>
+    <li><strong>Jeunes</strong> (enfants & ados)</li>
+    <li><strong>Encadrants</strong> (responsables)</li>
+    <li><strong>Équipe de groupe / KP</strong> (membres du bureau)</li>
+  </ul>
+
+  <h2>Envie de nous rejoindre ?</h2>
+  <p>
+    Passe par l’<a class="link" href="{{ url_for('membres') }}">Espace membres</a> pour créer un compte,
+    ou contacte-nous (bloc “Contact” en bas de page).
+  </p>
+</div>
+{% endblock %}

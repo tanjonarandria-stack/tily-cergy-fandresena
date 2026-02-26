@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Contact</h1>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2>Nous écrire</h2>
+    <form method="post" class="form">
+      <label>Nom</label>
+      <input name="name" required>
+
+      <label>Email</label>
+      <input name="email" type="email" required>
+
+      <label>Sujet</label>
+      <input name="subject" required>
+
+      <label>Message</label>
+      <textarea name="message" rows="6" required placeholder="Explique ta demande (inscription, infos activités, partenariat, etc.)"></textarea>
+
+      <button class="btn" type="submit">Envoyer</button>
+    </form>
+    <p class="muted">Le message est enregistré et visible par l’admin du site. Si l’email est configuré, une copie est envoyée automatiquement.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Infos</h2>
+    <p class="muted">Tu peux aussi nous contacter via nos réseaux (liens en bas de page).</p>
+    <div class="callout">
+      <h3>Rappel droit à l’image</h3>
+      <p class="muted">Pour toute photo de mineur : autorisation parentale avant publication.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

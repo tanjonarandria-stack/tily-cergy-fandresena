@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Créer un compte</h1>
+
+<form method="post" class="form">
+  <label>Login</label>
+  <input name="username" autocomplete="username" required>
+
+  <label>Mot de passe (8 caractères minimum)</label>
+  <input name="password" type="password" autocomplete="new-password" required minlength="8">
+
+  <label>Rôle demandé</label>
+  <select name="role">
+    <option value="JEUNE">Enfant / Ado (Jeune membre)</option>
+    <option value="RESPONSABLE">RESPONSABLE (encadrant)</option>
+    <option value="KP">KP (membre du bureau)</option>
+  </select>
+
+  <button class="btn" type="submit">Créer</button>
+</form>
+
+<p class="muted">Déjà un compte ? <a class="link" href="{{ url_for('login') }}">Connexion</a></p>
+{% endblock %}

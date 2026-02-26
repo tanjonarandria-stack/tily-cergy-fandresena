@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="hero-card">
+    <h1>Tily Cergy <span class="accent">Fandresena</span></h1>
+
+<div class=\"panel\" style=\"margin-top:14px;\">
+  <img src=\"{{ url_for('static', filename='img/homecergy3.png') }}\" alt=\"Tily Cergy Fandresena\" style=\"width:100%; max-height:460px; object-fit:cover; border-radius:16px; border:1px solid var(--border);\">
+</div>
+
+    <p class="lead">
+      Un groupe scout (EEUdF Cergy) : grandir, servir, vivre la fraternité — enraciné dans la foi chrétienne.
+    </p>
+    <div class="cta">
+      <a class="btn" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
+      <a class="btn secondary" href="{{ url_for('nous_soutenir') }}">Nous soutenir</a>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <h2>Dernières actualités</h2>
+    {% if latest %}
+      <ul class="cards">
+        {% for post in latest %}
+          <li class="card">
+            <div class="card-body">
+              <h3>{{ post.title }}</h3>
+              <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+              <p>{{ post.content[:180] }}{% if post.content|length > 180 %}…{% endif %}</p>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <a class="link" href="{{ url_for('actus') }}">Voir toutes les actualités →</a>
+    {% else %}
+      <p class="muted">Aucune actu pour le moment. (Les KP/Admin pourront publier depuis l’admin.)</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="panel" style="margin-top:18px;">
+  <h2>Installer l’application (PWA)</h2>
+  <p class="muted">
+    Sur Android (Chrome) : menu ⋮ → <strong>Ajouter à l’écran d’accueil</strong>.<br>
+    Sur iPhone (Safari) : bouton Partager → <strong>Sur l’écran d’accueil</strong>.
+  </p>
+</section>
+
+<section class="grid-3">
+
+  <div class="panel">
+    <h3>Scoutisme & valeurs</h3>
+    <p>Une aventure concrète : activités, camps, services, responsabilité, esprit d’équipe.</p>
+  </div>
+  <div class="panel">
+    <h3>Une histoire récente</h3>
+    <p>Créé en 2024 à Cergy, d’abord section vivante FPMA Cergy, puis intégration EEUdF en 2025.</p>
+  </div>
+  <div class="panel">
+    <h3>Transparence</h3>
+    <p>Les dons aident à rendre les activités accessibles (matériel, camps, transports, formations).</p>
+  </div>
+</section>
+{% endblock %}

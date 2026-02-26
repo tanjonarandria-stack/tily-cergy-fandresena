@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: tily-cergy-fandresena
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:create_app()
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.2
+      - key: SECRET_KEY
+        generateValue: true
+      - key: BASE_URL
+        value: https://YOUR-RENDER-URL.onrender.com
+      - key: DONATION_EXTERNAL_URL
+        value: ""
+      - key: STRIPE_SECRET_KEY
+        value: ""
+      - key: STRIPE_PUBLIC_KEY
+        value: ""
+      - key: CLOUDINARY_CLOUD_NAME
+        value: ""
+      - key: CLOUDINARY_API_KEY
+        value: ""
+      - key: CLOUDINARY_API_SECRET
+        value: ""
+      - key: CLOUDINARY_FOLDER
+        value: "tily-cergy-fandresena"
+      - key: CONTACT_TO_EMAIL
+        value: ""
+      - key: SMTP_HOST
+        value: ""
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        value: ""
+      - key: SMTP_PASS
+        value: ""
+      - key: SMTP_FROM
+        value: ""
+      - key: SMTP_TLS
+        value: "true"
+      - key: INIT_ADMIN_USER
+        value: admin
+      - key: INIT_ADMIN_PASS
+        value: change-me-now
+databases:
+  - name: tily-cergy-db
+    plan: free

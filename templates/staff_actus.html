@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Publier une actu</h1>
+<p class="muted">Accessible aux KP/RESPONSABLE validés (et ADMIN). Tu peux ajouter un flyer (image).</p>
+
+<form method="post" enctype="multipart/form-data" class="form">
+  <label>Titre</label>
+  <input name="title" required>
+
+  <label>Contenu</label>
+  <textarea name="content" rows="6" required placeholder="Texte de l'événement, infos pratiques, etc."></textarea>
+
+  <label>Flyer / image (optionnel)</label>
+  <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp">
+
+  <button class="btn" type="submit">Publier</button>
+</form>
+{% endblock %}

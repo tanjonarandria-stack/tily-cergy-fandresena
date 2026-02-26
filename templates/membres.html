@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Espace membres</h1>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2>Connexion</h2>
+    <p>Accéder à l’espace albums + outils internes.</p>
+    <a class="btn" href="{{ url_for('login') }}">Se connecter</a>
+  </div>
+
+  <div class="panel">
+    <h2>Inscription</h2>
+    <p>Créer un compte (choix de rôle : Jeune / Responsable / KP).</p>
+    <a class="btn secondary" href="{{ url_for('register') }}">Créer un compte</a>
+  </div>
+</div>
+
+<div class="callout">
+  <h3>Rôle KP / Responsable</h3>
+  <p class="muted">
+    Pour éviter les abus, les rôles <strong>KP</strong> et <strong>RESPONSABLE</strong> sont validés par un admin
+    après inscription.
+  </p>
+</div>
+{% endblock %}

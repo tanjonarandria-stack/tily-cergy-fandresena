@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Connexion</h1>
+
+<form method="post" class="form">
+  <label>Login</label>
+  <input name="username" autocomplete="username" required>
+
+  <label>Mot de passe</label>
+  <input name="password" type="password" autocomplete="current-password" required>
+
+  <button class="btn" type="submit">Se connecter</button>
+</form>
+
+<p class="muted">Pas de compte ? <a class="link" href="{{ url_for('register') }}">Créer un compte</a></p>
+{% endblock %}

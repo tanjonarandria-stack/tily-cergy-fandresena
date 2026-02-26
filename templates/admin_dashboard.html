@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Admin</h1>
+
+<div class="grid-2">
+  <div class="panel">
+    <h2>Valider les rôles (KP/RESPONSABLE)</h2>
+    {% if pending %}
+      <ul class="list">
+        {% for u in pending %}
+          <li class="list-item">
+            <div>
+              <strong>{{ u.username }}</strong>
+              <span class="muted">a demandé: {{ u.role_requested }}</span>
+            </div>
+            <form method="post">
+              <input type="hidden" name="action" value="validate_role">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <button class="btn" type="submit">Valider</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Aucune demande en attente.</p>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <h2>Publier une actu</h2>
+    <form method="post" enctype="multipart/form-data" class="form">
+      <input type="hidden" name="action" value="new_post">
+      <label>Titre</label>
+      <input name="title" required>
+
+      <label>Contenu</label>
+      <textarea name="content" rows="6" required placeholder="Texte de l'événement, infos pratiques, etc."></textarea>
+
+      <label>Flyer / image (optionnel)</label>
+      <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp">
+
+      <button class="btn" type="submit">Publier</button>
+    </form>
+  </div>
+</div>
+
+<h2>Messages reçus (Contact)</h2>
+<p class="muted">Messages envoyés via la page Contact.</p>
+{% if messages %}
+  <div class="cards-grid">
+    {% for m in messages %}
+      <article class="card">
+        <div class="card-body">
+          <h3>{{ m.subject }}</h3>
+          <p class="muted">{{ m.created_at.strftime("%d/%m/%Y %H:%M") }} — {{ m.name }} ({{ m.email }})</p>
+          <p>{{ m.message }}</p>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">Aucun message.</p>
+{% endif %}
+
+<h2>Dernières actus</h2>
+
+{% if posts %}
+  <div class="cards-grid">
+    {% for post in posts %}
+      <article class="card">
+        <div class="card-body">
+          <h3>{{ post.title }}</h3>
+          <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+          <p>{{ post.content[:200] }}{% if post.content|length > 200 %}…{% endif %}</p>
+<form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette actu ?');">
+  <button class="btn secondary" type="submit">Supprimer</button>
+</form>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">Aucune actu.</p>
+{% endif %}
+{% endblock %}

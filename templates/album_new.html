@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Créer un album</h1>
+
+<form method="post" class="form">
+  <label>Titre</label>
+  <input name="title" required>
+
+  <label>Description</label>
+  <textarea name="description" rows="4" placeholder="Ex: Week-end de groupe, activité service, camp..."></textarea>
+
+  <label class="checkbox">
+    <input type="checkbox" name="consent" value="yes" required>
+    Je confirme respecter le droit à l’image (autorisation parentale pour mineurs, pas de photos sensibles).
+  </label>
+
+  <button class="btn" type="submit">Créer</button>
+</form>
+{% endblock %}

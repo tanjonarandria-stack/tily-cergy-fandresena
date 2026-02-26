@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row-between">
+  <div>
+    <h1>{{ album.title }}</h1>
+    <p class="muted">{{ album.created_at.strftime("%d/%m/%Y") }} — {{ album.description }}</p>
+  </div>
+  <div class="row">
+    <a class="btn secondary" href="{{ url_for('member_area') }}">← Retour</a>
+  </div>
+</div>
+
+{% if current_user.is_staff() %}
+  <div class="panel">
+    <h2>Ajouter une photo</h2>
+    <form method="post" enctype="multipart/form-data" class="form">
+      <label>Photo (png/jpg/jpeg/webp)</label>
+      <input type="file" name="photo" accept=".png,.jpg,.jpeg,.webp" required>
+
+      <label>Légende (optionnel)</label>
+      <input name="caption" placeholder="Ex: Jeu de piste, veillée, service...">
+
+      <label class="checkbox">
+        <input type="checkbox" name="consent" value="yes" required>
+        Je confirme respecter le droit à l’image (autorisation parentale pour mineurs, pas de photos sensibles).
+      </label>
+
+      <button class="btn" type="submit">Uploader</button>
+    </form>
+  </div>
+{% endif %}
+
+{% if photos %}
+  <div class="photos">
+    {% for p in photos %}
+      {% if p.approved or current_user.is_staff() or current_user.role == "ADMIN" %}
+      <figure class="photo">
+        <img src="{{ p.file_path }}" alt="Photo">
+        <figcaption>
+          {% if p.caption %}{{ p.caption }}{% endif %}
+          {% if not p.approved %}<div class="muted"><strong>Photo en attente</strong></div>{% endif %}
+          {% if (current_user.is_staff() or current_user.role == "ADMIN") %}
+            <div class="row" style="margin-top:8px;">
+              {% if not p.approved %}
+              <form method="post" action="{{ url_for('photo_approve', photo_id=p.id) }}" onsubmit="return confirm('Approuver cette photo ?');">
+                <button class="btn" type="submit">Approuver</button>
+              </form>
+              {% endif %}
+              <form method="post" action="{{ url_for('delete_photo', photo_id=p.id) }}" onsubmit="return confirm('Supprimer cette photo ?');">
+                <button class="btn secondary" type="submit">Supprimer</button>
+              </form>
+            </div>
+          {% endif %}
+        </figcaption>
+      </figure>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">Aucune photo pour le moment.</p>
+{% endif %}
+{% endblock %}

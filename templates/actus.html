@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Actualités</h1>
+
+{% if posts %}
+  <div class="cards-grid">
+    {% for post in posts %}
+      <article class="card">
+        {% if post.image_path %}
+          <img class="card-img" src="{{ post.image_path }}" alt="Image actu">
+        {% endif %}
+        <div class="card-body">
+          <h2 class="card-title">{{ post.title }}</h2>
+          <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+          <p>{{ post.content }}</p>
+{% if current_user.is_authenticated and current_user.role == 'ADMIN' %}
+  <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette actu ?');">
+    <button class="btn secondary" type="submit">Supprimer</button>
+  </form>
+{% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="muted">Aucune actualité pour le moment.</p>
+{% endif %}
+
+{% if current_user.is_authenticated and current_user.role == "ADMIN" %}
+  <p><a class="btn" href="{{ url_for('admin_dashboard') }}">Aller à l’admin</a></p>
+{% endif %}
+{% endblock %}

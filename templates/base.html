@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title or "Tily Cergy Fandresena – EEUdF Cergy" }}</title>
+  <meta name="description" content="Tily Cergy Fandresena (EEUdF Cergy) – Scoutisme, foi chrétienne, service et fraternité." />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <meta name="theme-color" content="#0b1020">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container row">
+      <a class="brand" href="{{ url_for('home') }}">
+        <span class="brand-mark">⛺</span>
+        <span class="brand-text">Tily Cergy <strong>Fandresena</strong></span>
+        <span class="brand-sub">EEUdF Cergy</span>
+      </a>
+
+      <nav class="nav">
+        <a href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
+        <a href="{{ url_for('nous_soutenir') }}">Nous soutenir</a>
+        <a class="pill donate" href="{{ url_for('nous_soutenir') }}">💙 Faire un Don</a>
+        <a href="{{ url_for('actus') }}">Actualités</a>
+        <a href="{{ url_for('membres') }}">Espace membres</a>
+        {% if current_user.is_authenticated %}
+          {% if current_user.role == "ADMIN" %}
+            <a class="pill" href="{{ url_for('admin_dashboard') }}">Administration</a>
+          {% elif current_user.is_staff() %}
+            <a class="pill" href="{{ url_for('staff_actus') }}">Publier une actu</a>
+          {% endif %}
+          <a class="pill" href="{{ url_for('member_area') }}">Mon espace</a>
+          <a class="pill danger" href="{{ url_for('logout') }}">Déconnexion</a>
+        {% else %}
+          <a class="pill" href="{{ url_for('login') }}">Connexion</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash">
+          {% for cat, msg in messages %}
+            <div class="flash-item {{ cat }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4>Partenaires & liens</h4>
+          <div class="partners">
+            <!-- Remplace les href par tes vrais liens -->
+            <a href="https://www.instagram.com/tilyfrance/?hl=fr" target="_blank" rel="noopener" title="Instagram Tily France">
+              <img src="{{ url_for('static', filename='img/tily_france.png') }}" alt="Tily France">
+            </a>
+            <a href="https://eeudf.org/" target="_blank" rel="noopener" title="EEUdF">
+              <img src="{{ url_for('static', filename='img/eeudf.png') }}" alt="EEUdF">
+            </a>
+            <a href="https://www.scout.org/" target="_blank" rel="noopener" title="WOSM">
+              <img src="{{ url_for('static', filename='img/scout_org.png') }}" alt="scout.org">
+            </a>
+            <a href="https://www.facebook.com/p/FPMA-CERGY-61555887332439/" target="_blank" rel="noopener" title="Facebook FPMA Cergy">
+              <img src="{{ url_for('static', filename='img/fpma_cergy.png') }}" alt="FPMA Cergy">
+            </a>
+            <a href="https://www.scout.mg/" target="_blank" rel="noopener" title="Tily eto Madagasikara">
+              <img src="{{ url_for('static', filename='img/scout_mg.png') }}" alt="scout.mg">
+            </a>
+          </div>
+          <p class="muted">⚠️ Photos : respecter le droit à l’image, surtout pour les mineurs (autorisation parentale).</p>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <p class="muted">Tu peux remplacer ce bloc par une adresse email, un téléphone, ou un formulaire.</p>
+          <p class="muted">© {{ 2026 }} — Tily Cergy Fandresena (EEUdF Cergy)</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script>
+    // PWA: Service Worker
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("{{ url_for('static', filename='sw.js') }}");
+      });
+    }
+  </script>
+</body>
+
+</html>
