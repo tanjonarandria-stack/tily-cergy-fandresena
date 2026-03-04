@@ -43,10 +43,6 @@ def save_uploaded_image(file_storage, default_subfolder: str = "uploads"):
     if cfg.get("CLOUDINARY_CLOUD_NAME") and cfg.get("CLOUDINARY_API_KEY") and cfg.get("CLOUDINARY_API_SECRET"):
         folder = f"{cfg.get('CLOUDINARY_FOLDER','tily-cergy-fandresena')}/{default_subfolder}"
 
-        # Transformations:
-        # - crop=limit keeps aspect ratio, avoids cropping, avoids upscaling
-        # - width/height caps the image size for faster loading
-        # - quality=auto + fetch_format=auto => automatic compression + WebP/AVIF when possible
         res = cloudinary.uploader.upload(
             file_storage,
             folder=folder,
@@ -113,7 +109,6 @@ def create_app():
     app.config.from_object(Config)
 
     # Render / reverse proxy (important)
-    # so url_for() + HTTPS work correctly behind Render proxy
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # Logging
@@ -244,10 +239,16 @@ def create_app():
         if request.method == "POST":
             username = request.form.get("username", "").strip().lower()
             password = request.form.get("password", "")
+            password_confirm = request.form.get("password_confirm", "")  # <-- NEW
             role_choice = request.form.get("role", "JEUNE")
 
-            if not username or not password:
+            # Require confirm (since your new register.html includes it)
+            if not username or not password or not password_confirm:
                 flash("Merci de remplir tous les champs.", "error")
+                return redirect(url_for("register"))
+
+            if password != password_confirm:
+                flash("Les mots de passe ne correspondent pas.", "error")
                 return redirect(url_for("register"))
 
             if len(password) < 8:
@@ -307,6 +308,12 @@ def create_app():
         if request.method == "POST":
             old = request.form.get("old_password", "")
             new = request.form.get("new_password", "")
+
+            # OPTIONAL confirm: only enforced if you add the field in the template
+            new_confirm = request.form.get("new_password_confirm", "").strip()
+            if new_confirm and new != new_confirm:
+                flash("Les nouveaux mots de passe ne correspondent pas.", "error")
+                return redirect(url_for("change_password"))
 
             if not current_user.check_password(old):
                 flash("Ancien mot de passe incorrect.", "error")
@@ -446,16 +453,13 @@ def create_app():
     @app.route("/admin", methods=["GET", "POST"])
     @login_required
     def admin_dashboard():
-        # Sécurité : admin uniquement
         if current_user.role != "ADMIN":
             flash("Accès réservé à l’admin.", "error")
             return redirect(url_for("home"))
 
-        # --- Actions POST venant de templates/admin_dashboard.html ---
         if request.method == "POST":
             action = request.form.get("action", "")
 
-            # 1) Validation d'un rôle demandé (KP/RESPONSABLE)
             if action == "validate_role":
                 user_id = request.form.get("user_id", type=int)
                 u = db.session.get(User, user_id) if user_id else None
@@ -476,7 +480,6 @@ def create_app():
                 flash("Rôle validé ✅", "success")
                 return redirect(url_for("admin_dashboard"))
 
-            # 2) Publication d’une actu (même logique que staff_actus)
             if action == "new_post":
                 title = request.form.get("title", "").strip()
                 content = request.form.get("content", "").strip()
@@ -509,7 +512,6 @@ def create_app():
             flash("Action inconnue.", "error")
             return redirect(url_for("admin_dashboard"))
 
-        # --- Données affichées dans la page admin ---
         pending = User.query.filter(
             User.role_validated.is_(False),
             User.role_requested != "",

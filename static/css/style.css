@@ -154,3 +154,87 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
 
 .pill.donate{border-color: rgba(124,240,199,.45); background: rgba(124,240,199,.10); color: var(--text);}
 .pill.donate:hover{background: rgba(124,240,199,.18)}
+
+/* Champ mot de passe + bouton oeil (SVG) */
+.password-field{
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+
+.password-field input{
+  padding-right: 46px; /* place pour l’icône */
+}
+
+.password-toggle{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  border-radius: 12px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  cursor:pointer;
+  user-select:none;
+}
+
+.password-toggle:hover{
+  background: rgba(255,255,255,.07);
+}
+
+.password-toggle svg{
+  width:18px;
+  height:18px;
+  opacity:.9;
+}
+
+/* --- Password UI (force + confirm + toggle) --- */
+.password-field{ position:relative; display:flex; align-items:center; }
+.password-field input{ padding-right:46px; }
+
+.password-toggle{
+  position:absolute; right:10px; top:50%;
+  transform:translateY(-50%);
+  width:36px; height:36px;
+  display:grid; place-items:center;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  cursor:pointer;
+  transition: transform .12s ease, background .12s ease;
+}
+.password-toggle:hover{ background:rgba(255,255,255,.07); transform:translateY(-50%) scale(1.03); }
+.password-toggle:active{ transform:translateY(-50%) scale(0.97); }
+.password-toggle svg{ width:18px; height:18px; }
+
+/* Barre de force */
+.pw-meter{ margin-top:8px; display:grid; gap:6px; }
+.pw-bar{
+  height:10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background: rgba(0,0,0,.18);
+  overflow:hidden;
+}
+.pw-fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  transition: width .18s ease;
+  background: rgba(255,255,255,.25);
+}
+.pw-label{ font-size:13px; color:var(--muted); }
+
+/* Couleurs selon niveau (sans “hardcode” trop agressif) */
+.pw-weak  .pw-fill{ background: rgba(255,107,107,.75); }
+.pw-mid   .pw-fill{ background: rgba(155,182,255,.75); }
+.pw-strong .pw-fill{ background: rgba(124,240,199,.75); }
+
+/* Confirmation */
+.pw-hint{ font-size:13px; color:var(--muted); }
+.pw-hint.ok{ color: var(--accent); }
+.pw-hint.bad{ color: var(--danger); }
