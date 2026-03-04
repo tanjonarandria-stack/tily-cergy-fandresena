@@ -388,7 +388,85 @@ def create_app():
         db.session.commit()
         flash("Photo approuvée ✅", "success")
         return redirect(url_for("album_view", album_id=photo.album_id))
+    
+    # ---------------- ADMIN DASHBOARD ----------------
+    @app.route("/admin", methods=["GET", "POST"])
+    @login_required
+    def admin_dashboard():
+        # Sécurité : admin uniquement
+        if current_user.role != "ADMIN":
+            flash("Accès réservé à l’admin.", "error")
+            return redirect(url_for("home"))
 
+        # --- Actions POST venant de templates/admin_dashboard.html ---
+        if request.method == "POST":
+            action = request.form.get("action", "")
+
+            # 1) Validation d'un rôle demandé (KP/RESPONSABLE)
+            if action == "validate_role":
+                user_id = request.form.get("user_id", type=int)
+                u = db.session.get(User, user_id) if user_id else None
+
+                if not u:
+                    flash("Utilisateur introuvable.", "error")
+                    return redirect(url_for("admin_dashboard"))
+
+                if not u.role_requested:
+                    flash("Aucune demande de rôle pour cet utilisateur.", "error")
+                    return redirect(url_for("admin_dashboard"))
+
+                u.role = u.role_requested
+                u.role_requested = ""
+                u.role_validated = True
+                db.session.commit()
+
+                flash("Rôle validé ✅", "success")
+                return redirect(url_for("admin_dashboard"))
+
+            # 2) Publication d’une actu (même logique que staff_actus)
+            if action == "new_post":
+                title = request.form.get("title", "").strip()
+                content = request.form.get("content", "").strip()
+                file = request.files.get("image")
+
+                if not title or not content:
+                    flash("Titre + contenu obligatoires.", "error")
+                    return redirect(url_for("admin_dashboard"))
+
+                image_path, public_id = ("", "")
+                if file and file.filename:
+                    image_path, public_id = save_uploaded_image(file, default_subfolder="actus")
+
+                post = NewsPost(
+                    title=title,
+                    content=content,
+                    image_path=image_path,
+                    cloudinary_public_id=public_id
+                )
+                db.session.add(post)
+                db.session.commit()
+
+                flash("Actu publiée ✅", "success")
+                return redirect(url_for("admin_dashboard"))
+
+            flash("Action inconnue.", "error")
+            return redirect(url_for("admin_dashboard"))
+
+        # --- Données affichées dans la page admin ---
+        pending = User.query.filter(
+            User.role_validated.is_(False),
+            User.role_requested != ""
+        ).order_by(User.created_at.desc()).all()
+
+        messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
+        posts = NewsPost.query.order_by(NewsPost.created_at.desc()).all()
+
+        return render_template(
+            "admin_dashboard.html",
+            pending=pending,
+            messages=messages,
+            posts=posts
+        )
     # ---------------- STAFF ACTUS ----------------
     @app.route("/staff/actus", methods=["GET", "POST"])
     @login_required
