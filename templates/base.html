@@ -26,7 +26,7 @@
         <a href="{{ url_for('nous_soutenir') }}">Nous soutenir</a>
         <a class="pill donate" href="{{ url_for('nous_soutenir') }}">💙 Faire un Don</a>
         <a href="{{ url_for('actus') }}">Actualités</a>
-        <a href="{{ url_for('membres') }}">Espace membres</a>
+        <a href="{{ url_for('member_area') }}">Espace membres</a>
         {% if current_user.is_authenticated %}
           {% if current_user.role == "ADMIN" %}
             <a class="pill" href="{{ url_for('admin_dashboard') }}">Administration</a>
@@ -83,8 +83,12 @@
         </div>
 
         <div>
-          <h4>Contact</h4>
-          <p class="muted">Tu peux remplacer ce bloc par une adresse email, un téléphone, ou un formulaire.</p>
+          <h3>Contact</h3>
+          <p>
+            <a class="btn" href="{{ url_for('contact') }}">
+            📩 Accéder au formulaire de contact
+            </a>
+          </p>
           <p class="muted">© {{ 2026 }} — Tily Cergy Fandresena (EEUdF Cergy)</p>
         </div>
       </div>
