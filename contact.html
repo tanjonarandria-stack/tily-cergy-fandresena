@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Contact</h1>
+
+<div class="grid-2">
+
+  <!-- FORMULAIRE -->
+  <div class="panel">
+    <h2 id="form-contact">Nous écrire</h2>
+
+    <form method="post" class="form">
+
+      <label>Nom</label>
+      <input name="name" required>
+
+      <label>Email</label>
+      <input name="email" type="email" required>
+
+      <label>Sujet</label>
+      <input name="subject" required>
+
+      <label>Message</label>
+      <textarea name="message" rows="6" required
+        placeholder="Explique ta demande (inscription, infos activités, partenariat, etc.)"></textarea>
+
+      <button class="btn" type="submit">Envoyer le message</button>
+
+    </form>
+
+    <p class="muted">
+      Le message est enregistré et visible par l’admin du site.
+      Si l’email est configuré, une copie peut être envoyée automatiquement.
+    </p>
+  </div>
+
+
+  <!-- INFOS CONTACT -->
+  <div class="panel">
+
+    <h2>Nous contacter</h2>
+
+    <div class="list">
+
+      <div class="list-item">
+        <div>
+          <strong>📧 Email</strong><br>
+          <a class="link" href="mailto:tily.fandresena.cergy@gmail.com">
+            tily.fandresena.cergy@gmail.com
+          </a>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div>
+          <strong>📞 Téléphone</strong><br>
+          <a class="link" href="tel:+33600000000">
+            06 00 00 00 00
+          </a>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div>
+          <strong>📍 Adresse</strong><br>
+          19 Place des Touleuses<br>
+          95000 Cergy<br>
+          France
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="callout">
+      <h3>Besoin d’une réponse rapide ?</h3>
+      <p class="muted">
+        Envoie-nous un message via le formulaire et nous te répondrons dès que possible.
+      </p>
+
+      <a class="btn" href="#form-contact">Nous écrire</a>
+    </div>
+
+
+    <h3 style="margin-top:16px">Carte</h3>
+
+    <div style="border:1px solid var(--border); border-radius: var(--radius); overflow:hidden;">
+      <iframe
+        src="https://www.google.com/maps?q=19%20Place%20des%20Touleuses%2095000%20Cergy&output=embed"
+        width="100%"
+        height="260"
+        style="border:0;"
+        loading="lazy">
+      </iframe>
+    </div>
+
+
+    <div class="callout" style="margin-top:14px">
+      <h3>Rappel droit à l’image</h3>
+      <p class="muted">
+        Pour toute photo de mineur : autorisation parentale avant publication.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}
