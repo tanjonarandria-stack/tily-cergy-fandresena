@@ -21,7 +21,14 @@ def allowed_file(filename: str) -> bool:
 
 
 def save_uploaded_image(file_storage, default_subfolder: str = "uploads"):
-    """Save image locally or to Cloudinary. Returns (url, public_id)."""
+    """
+    Save image locally or to Cloudinary. Returns (url, public_id).
+
+    Production goal:
+    - Prefer Cloudinary (persistent storage + CDN)
+    - Auto compression + modern formats (webp/avif)
+    - Safe resize (no crop, no upscaling)
+    """
     if not file_storage or file_storage.filename == "":
         return ("", "")
     if not allowed_file(file_storage.filename):
@@ -29,15 +36,39 @@ def save_uploaded_image(file_storage, default_subfolder: str = "uploads"):
 
     cfg = current_app.config
 
-    # Cloudinary if configured
+    # Detect production (Render)
+    is_prod = os.getenv("ENV", "").lower() == "production" or os.getenv("FLASK_ENV", "").lower() == "production"
+
+    # ---- Cloudinary (recommended) ----
     if cfg.get("CLOUDINARY_CLOUD_NAME") and cfg.get("CLOUDINARY_API_KEY") and cfg.get("CLOUDINARY_API_SECRET"):
         folder = f"{cfg.get('CLOUDINARY_FOLDER','tily-cergy-fandresena')}/{default_subfolder}"
-        res = cloudinary.uploader.upload(file_storage, folder=folder, resource_type="image")
+
+        # Transformations:
+        # - crop=limit keeps aspect ratio, avoids cropping, avoids upscaling
+        # - width/height caps the image size for faster loading
+        # - quality=auto + fetch_format=auto => automatic compression + WebP/AVIF when possible
+        res = cloudinary.uploader.upload(
+            file_storage,
+            folder=folder,
+            resource_type="image",
+            unique_filename=True,
+            overwrite=False,
+            transformation=[
+                {"width": 1600, "height": 1600, "crop": "limit"},
+                {"quality": "auto"},
+                {"fetch_format": "auto"},
+            ],
+        )
         url = res.get("secure_url") or res.get("url") or ""
         public_id = res.get("public_id") or ""
         return (url, public_id)
 
-    # Local fallback
+    # ---- Local fallback (ONLY OK in local dev) ----
+    # On Render free plan, local disk is ephemeral -> images disappear after restart.
+    if is_prod:
+        current_app.logger.warning("Upload refused: Cloudinary not configured in production.")
+        return ("", "")
+
     upload_folder = cfg["UPLOAD_FOLDER"]
     os.makedirs(upload_folder, exist_ok=True)
 
@@ -98,12 +129,24 @@ def create_app():
             REMEMBER_COOKIE_SAMESITE="Lax",
         )
 
-    # Ensure folders
+    # Ensure folders (local dev)
     os.makedirs("instance", exist_ok=True)
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
     # DB
     db.init_app(app)
+
+    # Avoid browser/PWA serving old dynamic pages
+    @app.after_request
+    def add_cache_headers(resp):
+        if (
+            request.path in ("/actus", "/espace")
+            or request.path.startswith("/album")
+            or request.path.startswith("/admin")
+            or request.path.startswith("/staff")
+        ):
+            resp.headers["Cache-Control"] = "no-store"
+        return resp
 
     # Login
     login_manager = LoginManager()
@@ -118,7 +161,11 @@ def create_app():
     stripe.api_key = app.config.get("STRIPE_SECRET_KEY", "")
 
     # Cloudinary config (optional)
-    if app.config.get("CLOUDINARY_CLOUD_NAME") and app.config.get("CLOUDINARY_API_KEY") and app.config.get("CLOUDINARY_API_SECRET"):
+    if (
+        app.config.get("CLOUDINARY_CLOUD_NAME")
+        and app.config.get("CLOUDINARY_API_KEY")
+        and app.config.get("CLOUDINARY_API_SECRET")
+    ):
         cloudinary.config(
             cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
             api_key=app.config["CLOUDINARY_API_KEY"],
@@ -342,10 +389,16 @@ def create_app():
 
             image_url, public_id = save_uploaded_image(file, default_subfolder="albums")
             if not image_url:
-                flash("Upload impossible.", "error")
+                flash("Upload impossible (Cloudinary non configuré en production ?).", "error")
                 return redirect(url_for("album_view", album_id=album_id))
 
-            p = Photo(album_id=album_id, file_path=image_url, caption=caption, approved=False, cloudinary_public_id=public_id)
+            p = Photo(
+                album_id=album_id,
+                file_path=image_url,
+                caption=caption,
+                approved=False,
+                cloudinary_public_id=public_id,
+            )
             db.session.add(p)
             db.session.commit()
 
@@ -388,7 +441,7 @@ def create_app():
         db.session.commit()
         flash("Photo approuvée ✅", "success")
         return redirect(url_for("album_view", album_id=photo.album_id))
-    
+
     # ---------------- ADMIN DASHBOARD ----------------
     @app.route("/admin", methods=["GET", "POST"])
     @login_required
@@ -437,11 +490,15 @@ def create_app():
                 if file and file.filename:
                     image_path, public_id = save_uploaded_image(file, default_subfolder="actus")
 
+                if file and file.filename and not image_path:
+                    flash("Upload image impossible (Cloudinary non configuré en production ?).", "error")
+                    return redirect(url_for("admin_dashboard"))
+
                 post = NewsPost(
                     title=title,
                     content=content,
                     image_path=image_path,
-                    cloudinary_public_id=public_id
+                    cloudinary_public_id=public_id,
                 )
                 db.session.add(post)
                 db.session.commit()
@@ -455,7 +512,7 @@ def create_app():
         # --- Données affichées dans la page admin ---
         pending = User.query.filter(
             User.role_validated.is_(False),
-            User.role_requested != ""
+            User.role_requested != "",
         ).order_by(User.created_at.desc()).all()
 
         messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
@@ -465,8 +522,9 @@ def create_app():
             "admin_dashboard.html",
             pending=pending,
             messages=messages,
-            posts=posts
+            posts=posts,
         )
+
     # ---------------- STAFF ACTUS ----------------
     @app.route("/staff/actus", methods=["GET", "POST"])
     @login_required
@@ -488,7 +546,16 @@ def create_app():
             if file and file.filename:
                 image_path, public_id = save_uploaded_image(file, default_subfolder="actus")
 
-            post = NewsPost(title=title, content=content, image_path=image_path, cloudinary_public_id=public_id)
+            if file and file.filename and not image_path:
+                flash("Upload image impossible (Cloudinary non configuré en production ?).", "error")
+                return redirect(url_for("staff_actus"))
+
+            post = NewsPost(
+                title=title,
+                content=content,
+                image_path=image_path,
+                cloudinary_public_id=public_id,
+            )
             db.session.add(post)
             db.session.commit()
             flash("Actu publiée ✅", "success")
@@ -551,14 +618,16 @@ def create_app():
         session = stripe.checkout.Session.create(
             mode="payment",
             payment_method_types=["card"],
-            line_items=[{
-                "price_data": {
-                    "currency": "eur",
-                    "product_data": {"name": "Don – Tily Cergy Fandresena (EEUdF Cergy)"},
-                    "unit_amount": amount_eur * 100,
-                },
-                "quantity": 1,
-            }],
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "eur",
+                        "product_data": {"name": "Don – Tily Cergy Fandresena (EEUdF Cergy)"},
+                        "unit_amount": amount_eur * 100,
+                    },
+                    "quantity": 1,
+                }
+            ],
             success_url=f"{app.config['BASE_URL']}{url_for('don_success')}",
             cancel_url=f"{app.config['BASE_URL']}{url_for('nous_soutenir')}",
         )
