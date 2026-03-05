@@ -4,11 +4,11 @@
   <div class="hero-card">
     <h1>Tily Cergy <span class="accent">Fandresena</span></h1>
 
-<div class="panel" style="margin-top:14px;">
-  <img src="{{ url_for('static', filename='img/homecergy3.png') }}"
-       alt="Tily Cergy Fandresena"
-       style="width:100%; max-height:460px; object-fit:cover; border-radius:16px; border:1px solid var(--border);">
-</div>
+    <div class="panel" style="margin-top:14px;">
+      <img src="{{ url_for('static', filename='img/homecergy3.png') }}"
+           alt="Tily Cergy Fandresena"
+           style="width:100%; max-height:460px; object-fit:cover; border-radius:16px; border:1px solid var(--border);">
+    </div>
 
     <p class="lead">
       Un groupe scout (EEUdF Cergy) : grandir, servir, vivre la fraternité — enraciné dans la foi chrétienne.
@@ -40,6 +40,44 @@
   </div>
 </section>
 
+<!-- BLOC HELLOASSO (VIGNETTE + BOUTON) -->
+<section class="panel" style="margin-top:18px; text-align:center;">
+  <h2>Soutenir Tily Cergy</h2>
+
+  <p class="muted">
+    Aidez notre groupe scout à financer les activités, le matériel et les camps.
+  </p>
+
+  <div style="display:flex; justify-content:center; margin-top:10px;">
+    <iframe
+      id="haWidgetHome"
+      title="HelloAsso - Don Tily Cergy"
+      allowtransparency="true"
+      src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-vignette"
+      style="width:320px; max-width:100%; border:none;"
+      scrolling="no"
+    ></iframe>
+  </div>
+
+  <div style="margin-top:12px;">
+    <a class="btn secondary" href="{{ url_for('nous_soutenir') }}">Voir la collecte</a>
+  </div>
+</section>
+
+<script>
+  window.addEventListener("message", function (e) {
+    if (!String(e.origin).includes("helloasso.com")) return;
+    if (!e.data || typeof e.data.height === "undefined") return;
+
+    const height = parseInt(e.data.height, 10);
+    const widget = document.getElementById("haWidgetHome");
+
+    if (widget && height > 50) {
+      widget.style.height = height + "px";
+    }
+  });
+</script>
+
 <section class="panel" style="margin-top:18px;">
   <h2>Installer l’application (PWA)</h2>
   <p class="muted">
@@ -49,14 +87,13 @@
 </section>
 
 <section class="grid-3">
-
   <div class="panel">
     <h3>Scoutisme & valeurs</h3>
     <p>Une aventure concrète : activités, camps, services, responsabilité, esprit d’équipe.</p>
   </div>
   <div class="panel">
     <h3>Une histoire récente</h3>
-    <p>Créé en 2024 à Cergy, d’abord section vivante FPMA Cergy, puis intégration EEUdF en 2025.</p>
+    <p>Créé en 2024 à Cergy, d’abord section vivante FPMA Cergy et pour toujurs, puis intégration EEUdF en 2025.</p>
   </div>
   <div class="panel">
     <h3>Transparence</h3>

@@ -7,7 +7,65 @@
     Votre don aide à rendre les activités accessibles : matériel, transports, formations, camps, actions solidaires.
   </p>
 
-  <div class="grid-2">
+  <!-- HELLOASSO (EEUdF) -->
+  <div class="panel" style="margin-top:14px;">
+    <h2>Don via HelloAsso (EEUdF)</h2>
+    <p class="muted">
+      Paiement sécurisé via HelloAsso. Le reçu fiscal (si applicable) dépend de l’organisme porteur (EEUdF).
+    </p>
+
+    <div class="grid-2" style="margin-top:12px;">
+      <div class="panel">
+        <h3>Faire un don</h3>
+        <div style="display:flex; justify-content:center;">
+          <iframe
+            id="haWidgetVignette"
+            title="HelloAsso - Vignette don"
+            allowtransparency="true"
+            src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-vignette"
+            style="width:350px; max-width:100%; border:none;"
+            scrolling="no"
+          ></iframe>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Compteur de collecte</h3>
+        <div style="display:flex; justify-content:center;">
+          <iframe
+            id="haWidgetCompteur"
+            title="HelloAsso - Compteur collecte"
+            allowtransparency="true"
+            src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-compteur"
+            style="width:350px; max-width:100%; border:none;"
+            scrolling="no"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Ajuste automatiquement la hauteur des iframes HelloAsso
+      window.addEventListener("message", function (e) {
+        // Optionnel : sécurité - ne traite que helloasso
+        if (!String(e.origin).includes("helloasso.com")) return;
+
+        if (!e.data || typeof e.data.height === "undefined") return;
+
+        const height = parseInt(e.data.height, 10);
+        if (!height || height < 50) return;
+
+        const w1 = document.getElementById("haWidgetVignette");
+        const w2 = document.getElementById("haWidgetCompteur");
+
+        if (w1) w1.style.height = height + "px";
+        if (w2) w2.style.height = height + "px";
+      });
+    </script>
+  </div>
+
+  <!-- TES BLOCS EXISTANTS -->
+  <div class="grid-2" style="margin-top:14px;">
     <div class="panel">
       <h2>Don (lien externe)</h2>
       <p class="muted">Tu pourras remplacer ce lien quand tu seras prêt.</p>
