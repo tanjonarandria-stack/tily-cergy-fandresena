@@ -1,4 +1,4 @@
-const CACHE_NAME = "tily-cergy-v4";
+const CACHE_NAME = "tily-cergy-v5";
 
 // Assets/pages publics sûrs à mettre en cache
 const ASSETS = [

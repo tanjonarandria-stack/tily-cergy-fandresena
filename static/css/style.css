@@ -267,8 +267,6 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
   opacity:0;
   visibility:hidden;
   transition: opacity .45s ease, visibility .45s ease;
-  display:flex;
-  align-items:stretch;
 }
 
 .hero-slide.active{
@@ -305,6 +303,7 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
   position:relative;
   z-index:3;
   width:100%;
+  min-height:78vh;
   padding: clamp(28px, 4vw, 56px);
   display:flex;
   flex-direction:column;
@@ -457,17 +456,9 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
 
 @media (max-width: 980px){
   .hero-modern,
-  .hero-slides{
-    min-height:auto;
-  }
-
-  .hero-slide{
-    min-height:unset;
-  }
-
+  .hero-slides,
   .hero-content{
-    min-height:560px;
-    justify-content:center;
+    min-height:620px;
   }
 
   .news-preview-grid{
@@ -476,9 +467,14 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
 }
 
 @media (max-width: 640px){
+  .hero-modern,
+  .hero-slides,
+  .hero-content{
+    min-height:680px;
+  }
+
   .hero-content{
     padding:24px 18px 90px;
-    min-height:620px;
   }
 
   .hero-nav{
@@ -490,5 +486,10 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
   .hero-arrow{
     width:38px;
     height:38px;
+  }
+
+  .support-card iframe{
+    width:100% !important;
+    min-width:0;
   }
 }
