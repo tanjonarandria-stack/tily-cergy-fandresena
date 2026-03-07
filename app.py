@@ -1,7 +1,7 @@
 import os
 import logging
 
-from flask import Flask, render_template, request, redirect, url_for, flash, current_app, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, current_app, Response, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -228,6 +228,10 @@ def create_app():
             app.logger.exception("Admin seed skipped (tables not ready).")
 
     # ---------------- SEO / ROBOTS / SITEMAP ----------------
+    @app.get("/google3e19d625fb44c180.html")
+    def google_verification_file():
+        return send_from_directory("static", "google3e19d625fb44c180.html")
+
     @app.get("/robots.txt")
     def robots_txt():
         base_url = app.config.get("BASE_URL", "").rstrip("/")
