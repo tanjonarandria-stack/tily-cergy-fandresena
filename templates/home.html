@@ -1,83 +1,122 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero">
-  <div class="hero-card">
-    <h1>Tily Cergy <span class="accent">Fandresena</span></h1>
-    <p class="lead">
-      Un groupe scout (EEUdF Cergy) : grandir, servir, vivre la fraternité — enraciné dans la foi chrétienne.
-    </p>
 
-    <div class="carousel" aria-label="Galerie Tily Cergy">
-      <input type="radio" name="home-slider" id="slide-1" checked>
-      <input type="radio" name="home-slider" id="slide-2">
-      <input type="radio" name="home-slider" id="slide-3">
+<section class="hero-modern">
+  <div class="hero-overlay"></div>
 
-      <div class="carousel-slides">
-        <div class="carousel-slide s1">
-          <img src="{{ url_for('static', filename='img/homecergy3.png') }}" alt="Tily Cergy Fandresena">
-        </div>
-        <div class="carousel-slide s2">
-          <img src="{{ url_for('static', filename='img/homecergy3.png') }}" alt="Activités Tily Cergy">
-        </div>
-        <div class="carousel-slide s3">
-          <img src="{{ url_for('static', filename='img/homecergy3.png') }}" alt="Vie du groupe Tily Cergy">
+  <div class="hero-slides">
+    <!-- Slide 1 -->
+    <article class="hero-slide active">
+      <div class="hero-bg"
+           style="background-image:url('{{ url_for('static', filename='img/homecergy3.png') }}');"></div>
+      <div class="hero-content">
+        <span class="hero-badge">Scoutisme • Foi • Fraternité</span>
+        <h1>Tily Cergy <span class="accent">Fandresena</span></h1>
+        <p class="lead hero-lead">
+          Un groupe scout enraciné dans la foi chrétienne, au service des jeunes,
+          de la fraternité et des projets qui font grandir.
+        </p>
+        <div class="cta">
+          <a class="btn" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
+          <a class="btn secondary" href="{{ url_for('contact') }}">Nous contacter</a>
         </div>
       </div>
+    </article>
 
-      <div class="carousel-dots">
-        <label for="slide-1"></label>
-        <label for="slide-2"></label>
-        <label for="slide-3"></label>
+    <!-- Slide 2 -->
+    <article class="hero-slide">
+      <div class="hero-bg hero-bg-soft"></div>
+      <div class="hero-content">
+        <span class="hero-badge">Vie du groupe</span>
+        <h2>Dernières actualités</h2>
+
+        {% if latest %}
+          <div class="news-preview-grid">
+            {% for post in latest[:3] %}
+              <article class="news-preview-card">
+                <div class="news-preview-body">
+                  <p class="muted news-date">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+                  <h3>{{ post.title }}</h3>
+                  <p>{{ post.content[:140] }}{% if post.content|length > 140 %}…{% endif %}</p>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+
+          <div class="cta">
+            <a class="btn" href="{{ url_for('actus') }}">Voir toutes les actualités</a>
+          </div>
+        {% else %}
+          <div class="hero-panel">
+            <p class="muted">Aucune actualité pour le moment.</p>
+          </div>
+        {% endif %}
       </div>
-    </div>
+    </article>
 
-    <div class="cta">
-      <a class="btn" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
-      <a class="btn secondary" href="{{ url_for('nous_soutenir') }}">Faire un don</a>
-    </div>
+    <!-- Slide 3 -->
+    <article class="hero-slide">
+      <div class="hero-bg hero-bg-soft"></div>
+      <div class="hero-content">
+        <span class="hero-badge">Soutien & solidarité</span>
+        <h2>Soutenir Tily Cergy</h2>
+        <p class="lead hero-lead">
+          Vos dons aident à financer les activités, les camps, le matériel
+          et l’accompagnement des jeunes.
+        </p>
+
+        <div class="support-card">
+          <iframe
+            id="haWidgetHome"
+            title="HelloAsso - Don Tily Cergy"
+            allowtransparency="true"
+            src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-vignette"
+            style="width:320px; max-width:100%; border:none;"
+            scrolling="no"
+          ></iframe>
+        </div>
+
+        <div class="cta">
+          <a class="btn" href="{{ url_for('nous_soutenir') }}">Faire un don</a>
+        </div>
+      </div>
+    </article>
   </div>
 
-  <div class="hero-card">
-    <h2>Dernières actualités</h2>
-    {% if latest %}
-      <ul class="cards">
-        {% for post in latest %}
-          <li class="card">
-            <div class="card-body">
-              <h3>{{ post.title }}</h3>
-              <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
-              <p>{{ post.content[:180] }}{% if post.content|length > 180 %}…{% endif %}</p>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
-      <a class="link" href="{{ url_for('actus') }}">Voir toutes les actualités →</a>
-    {% else %}
-      <p class="muted">Aucune actu pour le moment. Les responsables pourront publier bientôt.</p>
-    {% endif %}
+  <div class="hero-nav">
+    <button type="button" class="hero-arrow" id="prevSlide" aria-label="Slide précédente">‹</button>
+    <div class="hero-dots">
+      <button type="button" class="hero-dot active" data-slide="0" aria-label="Aller au slide 1"></button>
+      <button type="button" class="hero-dot" data-slide="1" aria-label="Aller au slide 2"></button>
+      <button type="button" class="hero-dot" data-slide="2" aria-label="Aller au slide 3"></button>
+    </div>
+    <button type="button" class="hero-arrow" id="nextSlide" aria-label="Slide suivante">›</button>
   </div>
 </section>
 
-<section class="panel" style="margin-top:18px; text-align:center;">
-  <h2>Soutenir Tily Cergy</h2>
+<section class="quick-values">
+  <div class="grid-3">
+    <div class="panel value-card">
+      <h3>Grandir ensemble</h3>
+      <p>Une aventure éducative pour apprendre la responsabilité, l’esprit d’équipe et le service.</p>
+    </div>
+    <div class="panel value-card">
+      <h3>Vivre la foi</h3>
+      <p>Un cadre chrétien vivant où les jeunes peuvent grandir humainement et spirituellement.</p>
+    </div>
+    <div class="panel value-card">
+      <h3>Agir concrètement</h3>
+      <p>Camps, projets, actions solidaires et activités qui donnent du sens à l’engagement.</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel install-panel">
+  <h2>Installer l’application</h2>
   <p class="muted">
-    Aidez notre groupe scout à financer les activités, le matériel et les camps.
+    Sur Android : menu ⋮ → <strong>Ajouter à l’écran d’accueil</strong>.<br>
+    Sur iPhone : bouton Partager → <strong>Sur l’écran d’accueil</strong>.
   </p>
-
-  <div style="display:flex; justify-content:center; margin-top:10px;">
-    <iframe
-      id="haWidgetHome"
-      title="HelloAsso - Don Tily Cergy"
-      allowtransparency="true"
-      src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-vignette"
-      style="width:320px; max-width:100%; border:none;"
-      scrolling="no"
-    ></iframe>
-  </div>
-
-  <div style="margin-top:12px;">
-    <a class="btn secondary" href="{{ url_for('nous_soutenir') }}">Voir la collecte</a>
-  </div>
 </section>
 
 <script>
@@ -87,33 +126,70 @@
 
     const height = parseInt(e.data.height, 10);
     const widget = document.getElementById("haWidgetHome");
-
     if (widget && height > 50) {
       widget.style.height = height + "px";
     }
   });
+
+  (function () {
+    const slides = document.querySelectorAll(".hero-slide");
+    const dots = document.querySelectorAll(".hero-dot");
+    const prev = document.getElementById("prevSlide");
+    const next = document.getElementById("nextSlide");
+    let current = 0;
+    let timer = null;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+      });
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === index);
+      });
+      current = index;
+    }
+
+    function nextSlide() {
+      showSlide((current + 1) % slides.length);
+    }
+
+    function prevSlideFn() {
+      showSlide((current - 1 + slides.length) % slides.length);
+    }
+
+    function startAuto() {
+      timer = setInterval(nextSlide, 7000);
+    }
+
+    function resetAuto() {
+      clearInterval(timer);
+      startAuto();
+    }
+
+    if (next) {
+      next.addEventListener("click", () => {
+        nextSlide();
+        resetAuto();
+      });
+    }
+
+    if (prev) {
+      prev.addEventListener("click", () => {
+        prevSlideFn();
+        resetAuto();
+      });
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => {
+        showSlide(i);
+        resetAuto();
+      });
+    });
+
+    showSlide(0);
+    startAuto();
+  })();
 </script>
 
-<section class="panel" style="margin-top:18px;">
-  <h2>Installer l’application (PWA)</h2>
-  <p class="muted">
-    Sur Android (Chrome) : menu ⋮ → <strong>Ajouter à l’écran d’accueil</strong>.<br>
-    Sur iPhone (Safari) : bouton Partager → <strong>Sur l’écran d’accueil</strong>.
-  </p>
-</section>
-
-<section class="grid-3">
-  <div class="panel">
-    <h3>Scoutisme & valeurs</h3>
-    <p>Une aventure concrète : activités, camps, services, responsabilité et esprit d’équipe.</p>
-  </div>
-  <div class="panel">
-    <h3>Une histoire récente</h3>
-    <p>Créé à Cergy, le groupe se développe pour faire grandir les jeunes dans la foi, le service et la fraternité.</p>
-  </div>
-  <div class="panel">
-    <h3>Transparence</h3>
-    <p>Les dons aident à rendre les activités accessibles : matériel, camps, transports et formations.</p>
-  </div>
-</section>
 {% endblock %}
