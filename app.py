@@ -135,7 +135,7 @@ def create_app():
     @app.after_request
     def add_cache_headers(resp):
         if (
-            request.path in ("/actus", "/espace")
+            request.path in ("/actus", "/espace", "/albums")
             or request.path.startswith("/album")
             or request.path.startswith("/admin")
             or request.path.startswith("/staff")
@@ -212,6 +212,10 @@ def create_app():
             external_url=app.config.get("DONATION_EXTERNAL_URL", ""),
         )
 
+    @app.get("/espace")
+    def members_entry():
+        return render_template("membres.html")
+
     @app.route("/contact", methods=["GET", "POST"])
     def contact():
         if request.method == "POST":
@@ -239,10 +243,9 @@ def create_app():
         if request.method == "POST":
             username = request.form.get("username", "").strip().lower()
             password = request.form.get("password", "")
-            password_confirm = request.form.get("password_confirm", "")  # <-- NEW
+            password_confirm = request.form.get("password_confirm", "")
             role_choice = request.form.get("role", "JEUNE")
 
-            # Require confirm (since your new register.html includes it)
             if not username or not password or not password_confirm:
                 flash("Merci de remplir tous les champs.", "error")
                 return redirect(url_for("register"))
@@ -309,7 +312,6 @@ def create_app():
             old = request.form.get("old_password", "")
             new = request.form.get("new_password", "")
 
-            # OPTIONAL confirm: only enforced if you add the field in the template
             new_confirm = request.form.get("new_password_confirm", "").strip()
             if new_confirm and new != new_confirm:
                 flash("Les nouveaux mots de passe ne correspondent pas.", "error")
@@ -331,7 +333,7 @@ def create_app():
         return render_template("change_password.html")
 
     # ---------------- MEMBER AREA ----------------
-    @app.get("/espace")
+    @app.get("/albums")
     @login_required
     def member_area():
         albums = Album.query.order_by(Album.created_at.desc()).all()

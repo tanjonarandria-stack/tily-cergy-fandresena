@@ -1,19 +1,27 @@
-const CACHE_NAME = "tily-cergy-v2";
+const CACHE_NAME = "tily-cergy-v3";
 
-// Assets "statiques" (safe à mettre en cache)
+// Assets/pages publics sûrs à mettre en cache
 const ASSETS = [
   "/",
   "/nous-connaitre",
   "/nous-soutenir",
   "/contact",
+  "/espace",
   "/static/css/style.css",
   "/static/manifest.json",
   "/static/sw.js"
 ];
 
-// Pages dynamiques : toujours réseau (sinon actus peut être "ancienne")
+// Pages dynamiques / privées : toujours réseau d'abord
 const NETWORK_FIRST_PATHS = [
-  "/actus"
+  "/actus",
+  "/albums"
+];
+
+const NETWORK_FIRST_PREFIXES = [
+  "/album",
+  "/admin",
+  "/staff"
 ];
 
 self.addEventListener("install", (event) => {
@@ -36,16 +44,21 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Only handle same-origin requests
+  // On ne gère que les requêtes du même domaine
   if (url.origin !== self.location.origin) return;
 
-  // For /actus: network first (fresh content), fallback cache
-  if (NETWORK_FIRST_PATHS.includes(url.pathname)) {
+  const isNetworkFirstPath = NETWORK_FIRST_PATHS.includes(url.pathname);
+  const isNetworkFirstPrefix = NETWORK_FIRST_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
+
+  // Pages dynamiques / privées : réseau d'abord, fallback cache
+  if (isNetworkFirstPath || isNetworkFirstPrefix) {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          if (req.method === "GET") {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
           return res;
         })
         .catch(() => caches.match(req).then((r) => r || caches.match("/")))
@@ -53,14 +66,16 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Navigation (pages) : stale-while-revalidate simple
+  // Navigation sur pages publiques : cache puis mise à jour en arrière-plan
   if (req.mode === "navigate") {
     event.respondWith(
       caches.match(req).then((cached) => {
         const fetchPromise = fetch(req)
           .then((res) => {
-            const copy = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+            if (req.method === "GET") {
+              const copy = res.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+            }
             return res;
           })
           .catch(() => cached || caches.match("/"));
@@ -71,13 +86,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets : cache first, then network
+  // Fichiers statiques : cache first puis réseau
   event.respondWith(
     caches.match(req).then((cached) =>
       cached ||
       fetch(req).then((res) => {
-        const copy = res.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        if (req.method === "GET") {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        }
         return res;
       })
     )
