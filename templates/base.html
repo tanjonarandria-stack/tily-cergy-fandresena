@@ -3,15 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ title or "Tily Cergy Fandresena – EEUdF Cergy" }}</title>
-  <meta name="description" content="Tily Cergy Fandresena (EEUdF Cergy) – Scoutisme, foi chrétienne, service et fraternité." />
+
+  <title>{{ meta_title or title or "Tily Cergy Fandresena – Scouts EEUdF Cergy" }}</title>
+  <meta name="description" content="{{ meta_description or 'Tily Cergy Fandresena (EEUdF Cergy) – Scoutisme, foi chrétienne, service et fraternité.' }}" />
+  <meta name="keywords" content="{{ meta_keywords or 'scout cergy, tily cergy, eeudf cergy, scoutisme cergy, scout protestant cergy' }}">
+  <meta name="author" content="Tily Cergy Fandresena">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ canonical_url or request.url }}">
+
+  <meta property="og:title" content="{{ meta_title or title or 'Tily Cergy Fandresena – Scouts EEUdF Cergy' }}">
+  <meta property="og:description" content="{{ meta_description or 'Tily Cergy Fandresena (EEUdF Cergy) – Scoutisme, foi chrétienne, service et fraternité.' }}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ canonical_url or request.url }}">
+  <meta property="og:site_name" content="Tily Cergy Fandresena">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:image" content="{{ url_for('static', filename='img/homecergy3.png', _external=True) }}">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ meta_title or title or 'Tily Cergy Fandresena – Scouts EEUdF Cergy' }}">
+  <meta name="twitter:description" content="{{ meta_description or 'Tily Cergy Fandresena (EEUdF Cergy) – Scoutisme, foi chrétienne, service et fraternité.' }}">
+  <meta name="twitter:image" content="{{ url_for('static', filename='img/homecergy3.png', _external=True) }}">
+
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <meta name="theme-color" content="#0b1020">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/icon-192.png') }}">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Tily Cergy Fandresena",
+    "url": "{{ request.url_root.rstrip('/') }}",
+    "logo": "{{ url_for('static', filename='img/icon-512.png', _external=True) }}",
+    "description": "Groupe scout EEUdF basé à Cergy proposant activités jeunes, camps scouts, projets solidaires et vie fraternelle.",
+    "sameAs": [
+      "https://www.instagram.com/tilyfrance/?hl=fr",
+      "https://www.facebook.com/p/FPMA-CERGY-61555887332439/",
+      "https://eeudf.org/",
+      "https://www.scout.org/",
+      "https://www.scout.mg/"
+    ]
+  }
+  </script>
 </head>
+
 <script>
 (function(){
   function scorePassword(pw){
@@ -104,6 +142,7 @@
   document.addEventListener("DOMContentLoaded", wirePasswordUI);
 })();
 </script>
+
 <body>
   <header class="topbar">
     <div class="container row nav-wrap">
@@ -179,7 +218,7 @@
               📩 Accéder au formulaire de contact
             </a>
           </p>
-          <p class="muted">© {{ 2026 }} — Tily Cergy Fandresena (EEUdF Cergy)</p>
+          <p class="muted">© 2026 — Tily Cergy Fandresena (EEUdF Cergy)</p>
         </div>
       </div>
     </div>

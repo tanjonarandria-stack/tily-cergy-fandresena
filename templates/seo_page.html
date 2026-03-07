@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero-card">
+  <h1>{{ seo.headline }}</h1>
+  <p class="lead">{{ seo.intro }}</p>
+
+  <div class="cta">
+    <a class="btn" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
+    <a class="btn secondary" href="{{ url_for('contact') }}">Nous contacter</a>
+  </div>
+</section>
+
+<section class="grid-2" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Un groupe scout à Cergy</h2>
+    <p>
+      Tily Cergy Fandresena accompagne les jeunes à travers le scoutisme, la vie en équipe,
+      les activités éducatives, les week-ends, les camps et les projets de service.
+    </p>
+    <p>
+      Notre groupe veut aider les jeunes à grandir dans la fraternité, la responsabilité,
+      le service et la foi chrétienne.
+    </p>
+  </div>
+
+  <div class="panel">
+    <h2>Pourquoi rejoindre Tily Cergy Fandresena ?</h2>
+    <ul>
+      <li>Activités régulières pour les jeunes</li>
+      <li>Camps et sorties</li>
+      <li>Projets solidaires</li>
+      <li>Vie de groupe et esprit de fraternité</li>
+      <li>Enracinement dans la foi chrétienne</li>
+    </ul>
+  </div>
+</section>
+
+<section class="panel" style="margin-top:18px;">
+  <h2>Le scoutisme à Cergy avec les EEUdF</h2>
+  <p>
+    Le scoutisme aide les jeunes à devenir plus autonomes, plus solidaires et plus responsables.
+    À Tily Cergy Fandresena, nous organisons des activités adaptées, des temps forts, des camps
+    et des projets qui permettent d’apprendre en faisant.
+  </p>
+</section>
+
+{% if latest %}
+<section style="margin-top:18px;">
+  <h2>Nos dernières actualités</h2>
+  <div class="cards-grid">
+    {% for post in latest %}
+      <article class="card">
+        {% if post.image_path %}
+          <img class="card-img" src="{{ post.image_path }}" alt="{{ post.title }}">
+        {% endif %}
+        <div class="card-body">
+          <h3 class="card-title">{{ post.title }}</h3>
+          <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+          <p>{{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}</p>
+          <a class="btn secondary" href="{{ url_for('actus') }}">Voir les actualités</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="callout">
+  <h3>Contact</h3>
+  <p>
+    Pour en savoir plus sur le groupe scout Tily Cergy Fandresena, les activités, les camps
+    ou les projets, rends-toi sur la page contact.
+  </p>
+  <p>
+    <a class="btn" href="{{ url_for('contact') }}">Nous écrire</a>
+  </p>
+</section>
+
+{% endblock %}
