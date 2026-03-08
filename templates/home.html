@@ -25,7 +25,8 @@
 
     <!-- Slide 2 -->
     <article class="hero-slide">
-      <div class="hero-bg hero-bg-soft"></div>
+      <div class="hero-bg"
+           style="background-image:url('{{ url_for('static', filename='img/news.png') }}');"></div>
       <div class="hero-content">
         <span class="hero-badge">Vie du groupe</span>
         <h2>Dernières actualités</h2>
@@ -56,7 +57,8 @@
 
     <!-- Slide 3 -->
     <article class="hero-slide">
-      <div class="hero-bg hero-bg-soft"></div>
+      <div class="hero-bg"
+           style="background-image:url('{{ url_for('static', filename='img/soutien.png') }}');"></div>
       <div class="hero-content">
         <span class="hero-badge">Soutien & solidarité</span>
         <h2>Soutenir Tily Cergy</h2>
@@ -111,35 +113,31 @@
   </div>
 </section>
 
-<section class="panel" style="margin-top:18px;">
+<section class="seo-hidden" aria-hidden="true">
   <h2>Scout à Cergy : découvrir notre groupe</h2>
-  <p class="muted">
+  <p>
     Tily Cergy Fandresena est un groupe scout EEUdF à Cergy. Découvrez notre vision,
     nos activités, nos camps, notre engagement chrétien et notre accompagnement des jeunes.
   </p>
 
-  <div class="grid-2" style="margin-top:14px;">
-    <div class="panel">
-      <h3>Pages utiles</h3>
-      <ul>
-        <li><a class="link" href="{{ url_for('seo_page', slug='scout-cergy') }}">Scout Cergy</a></li>
-        <li><a class="link" href="{{ url_for('seo_page', slug='eeudf-cergy') }}">EEUdF Cergy</a></li>
-        <li><a class="link" href="{{ url_for('seo_page', slug='scoutisme-cergy') }}">Scoutisme à Cergy</a></li>
-        <li><a class="link" href="{{ url_for('seo_page', slug='groupe-scout-cergy') }}">Groupe scout à Cergy</a></li>
-        <li><a class="link" href="{{ url_for('seo_page', slug='scout-protestant-cergy') }}">Scout protestant à Cergy</a></li>
-      </ul>
-    </div>
+  <div>
+    <h3>Pages utiles</h3>
+    <ul>
+      <li><a href="{{ url_for('seo_page', slug='scout-cergy') }}">Scout Cergy</a></li>
+      <li><a href="{{ url_for('seo_page', slug='eeudf-cergy') }}">EEUdF Cergy</a></li>
+      <li><a href="{{ url_for('seo_page', slug='scoutisme-cergy') }}">Scoutisme à Cergy</a></li>
+      <li><a href="{{ url_for('seo_page', slug='groupe-scout-cergy') }}">Groupe scout à Cergy</a></li>
+      <li><a href="{{ url_for('seo_page', slug='scout-protestant-cergy') }}">Scout protestant à Cergy</a></li>
+    </ul>
+  </div>
 
-    <div class="panel">
-      <h3>Ce que nous proposons</h3>
-      <p>
-        Des activités éducatives, des camps, des temps forts, des projets de service,
-        une vie fraternelle et un accompagnement des jeunes dans un cadre scout chrétien.
-      </p>
-      <div class="cta">
-        <a class="btn" href="{{ url_for('contact') }}">Nous rejoindre</a>
-      </div>
-    </div>
+  <div>
+    <h3>Ce que nous proposons</h3>
+    <p>
+      Des activités éducatives, des camps, des temps forts, des projets de service,
+      une vie fraternelle et un accompagnement des jeunes dans un cadre scout chrétien.
+    </p>
+    <a href="{{ url_for('contact') }}">Nous rejoindre</a>
   </div>
 </section>
 

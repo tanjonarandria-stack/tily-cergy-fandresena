@@ -493,3 +493,11 @@ input:focus, textarea:focus, select:focus{border-color: rgba(155,182,255,.5)}
     min-width:0;
   }
 }
+
+.seo-hidden {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
