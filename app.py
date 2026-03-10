@@ -68,15 +68,13 @@ def save_uploaded_image(file_storage, default_subfolder: str = "uploads"):
 
     cfg = current_app.config
 
-    # Cloudinary if configured
     if cfg.get("CLOUDINARY_CLOUD_NAME") and cfg.get("CLOUDINARY_API_KEY") and cfg.get("CLOUDINARY_API_SECRET"):
-        folder = f"{cfg.get('CLOUDINARY_FOLDER','tily-cergy-fandresena')}/{default_subfolder}"
+        folder = f"{cfg.get('CLOUDINARY_FOLDER', 'tily-cergy-fandresena')}/{default_subfolder}"
         res = cloudinary.uploader.upload(file_storage, folder=folder, resource_type="image")
         url = res.get("secure_url") or res.get("url") or ""
         public_id = res.get("public_id") or ""
         return (url, public_id)
 
-    # Local fallback
     upload_folder = cfg["UPLOAD_FOLDER"]
     os.makedirs(upload_folder, exist_ok=True)
 
@@ -98,7 +96,6 @@ def delete_uploaded_image(url: str, public_id: str = ""):
     """Best-effort delete."""
     cfg = current_app.config
 
-    # Cloudinary
     try:
         if public_id and cfg.get("CLOUDINARY_CLOUD_NAME"):
             cloudinary.uploader.destroy(public_id, resource_type="image")
@@ -106,7 +103,6 @@ def delete_uploaded_image(url: str, public_id: str = ""):
     except Exception:
         current_app.logger.exception("Cloudinary delete failed")
 
-    # Local fallback
     try:
         if url.startswith("/"):
             path = url.lstrip("/")
@@ -120,13 +116,10 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Render / reverse proxy
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
-    # Logging
     logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 
-    # Secure cookies in production
     is_prod = os.getenv("ENV", "").lower() == "production" or os.getenv("FLASK_ENV", "").lower() == "production"
     if is_prod:
         app.config.update(
@@ -136,14 +129,11 @@ def create_app():
             REMEMBER_COOKIE_SAMESITE="Lax",
         )
 
-    # Ensure folders
     os.makedirs("instance", exist_ok=True)
     os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
-    # DB
     db.init_app(app)
 
-    # Login
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
@@ -152,10 +142,8 @@ def create_app():
     def load_user(user_id):
         return db.session.get(User, int(user_id))
 
-    # Stripe
     stripe.api_key = app.config.get("STRIPE_SECRET_KEY", "")
 
-    # Cloudinary config
     if app.config.get("CLOUDINARY_CLOUD_NAME") and app.config.get("CLOUDINARY_API_KEY") and app.config.get("CLOUDINARY_API_SECRET"):
         cloudinary.config(
             cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
@@ -164,13 +152,11 @@ def create_app():
             secure=True,
         )
 
-    # Create tables / migration / seed admin
     with app.app_context():
         auto_create = os.getenv("AUTO_CREATE_DB", "false").lower() in ("1", "true", "yes", "y")
         if auto_create:
             db.create_all()
 
-        # Add event_link if missing
         try:
             db.session.execute(
                 text("ALTER TABLE news_post ADD COLUMN IF NOT EXISTS event_link VARCHAR(500) DEFAULT ''")
@@ -181,7 +167,6 @@ def create_app():
             db.session.rollback()
             app.logger.exception("Migration event_link skipped/failed.")
 
-        # Seed admin
         try:
             admin_user = os.getenv("INIT_ADMIN_USER")
             admin_pass = os.getenv("INIT_ADMIN_PASS")
@@ -269,14 +254,19 @@ def create_app():
         if request.method == "POST":
             username = request.form.get("username", "").strip().lower()
             password = request.form.get("password", "")
+            password_confirm = request.form.get("password_confirm", "")
             role_choice = request.form.get("role", "JEUNE")
 
-            if not username or not password:
+            if not username or not password or not password_confirm:
                 flash("Merci de remplir tous les champs.", "error")
                 return redirect(url_for("register"))
 
             if len(password) < 8:
                 flash("Mot de passe trop court (8 caractères minimum).", "error")
+                return redirect(url_for("register"))
+
+            if password != password_confirm:
+                flash("Les mots de passe ne correspondent pas.", "error")
                 return redirect(url_for("register"))
 
             if User.query.filter_by(username=username).first():
@@ -315,6 +305,10 @@ def create_app():
 
             login_user(user)
             flash("Connecté ✅", "success")
+
+            if user.role == "ADMIN":
+                return redirect(url_for("admin_dashboard"))
+
             return redirect(url_for("member_area"))
 
         return render_template("login.html")
@@ -358,7 +352,7 @@ def create_app():
     @app.route("/album/nouveau", methods=["GET", "POST"])
     @login_required
     def album_new():
-        if not current_user.is_staff():
+        if not current_user.is_staff() and current_user.role != "ADMIN":
             flash("Accès réservé (KP/RESPONSABLE validé).", "error")
             return redirect(url_for("member_area"))
 
@@ -392,7 +386,7 @@ def create_app():
             return redirect(url_for("member_area"))
 
         if request.method == "POST":
-            if not current_user.is_staff():
+            if not current_user.is_staff() and current_user.role != "ADMIN":
                 flash("Upload réservé (KP/RESPONSABLE validé).", "error")
                 return redirect(url_for("album_view", album_id=album_id))
 
@@ -467,6 +461,77 @@ def create_app():
         flash("Photo approuvée ✅", "success")
         return redirect(url_for("album_view", album_id=photo.album_id))
 
+    # ---------------- ADMIN ----------------
+    @app.route("/admin", methods=["GET", "POST"])
+    @login_required
+    def admin_dashboard():
+        if current_user.role != "ADMIN":
+            flash("Accès réservé à l’admin.", "error")
+            return redirect(url_for("home"))
+
+        if request.method == "POST":
+            action = request.form.get("action", "").strip()
+
+            if action == "validate_role":
+                user_id = request.form.get("user_id", "").strip()
+                user = db.session.get(User, int(user_id)) if user_id.isdigit() else None
+
+                if not user:
+                    flash("Utilisateur introuvable.", "error")
+                    return redirect(url_for("admin_dashboard"))
+
+                if user.role_requested in ("KP", "RESPONSABLE"):
+                    user.role = user.role_requested
+                    user.role_validated = True
+                    user.role_requested = None
+                    db.session.commit()
+                    flash(f"Rôle validé pour {user.username} ✅", "success")
+                else:
+                    flash("Aucune demande valide à approuver.", "error")
+
+                return redirect(url_for("admin_dashboard"))
+
+            if action == "new_post":
+                title = request.form.get("title", "").strip()
+                content = request.form.get("content", "").strip()
+                event_link = request.form.get("event_link", "").strip()
+                file = request.files.get("image")
+
+                if not title or not content:
+                    flash("Titre + contenu obligatoires.", "error")
+                    return redirect(url_for("admin_dashboard"))
+
+                image_path, public_id = ("", "")
+                if file and file.filename:
+                    image_path, public_id = save_uploaded_image(file, default_subfolder="actus")
+
+                post = NewsPost(
+                    title=title,
+                    content=content,
+                    image_path=image_path,
+                    cloudinary_public_id=public_id,
+                    event_link=event_link
+                )
+                db.session.add(post)
+                db.session.commit()
+                flash("Actu publiée ✅", "success")
+                return redirect(url_for("admin_dashboard"))
+
+        pending = User.query.filter(
+            User.role_requested.in_(["KP", "RESPONSABLE"]),
+            User.role_validated.is_(False)
+        ).order_by(User.id.desc()).all()
+
+        messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
+        posts = NewsPost.query.order_by(NewsPost.created_at.desc()).all()
+
+        return render_template(
+            "admin_dashboard.html",
+            pending=pending,
+            messages=messages,
+            posts=posts
+        )
+
     # ---------------- STAFF ACTUS ----------------
     @app.route("/staff/actus", methods=["GET", "POST"])
     @login_required
@@ -521,7 +586,7 @@ def create_app():
         db.session.delete(post)
         db.session.commit()
         flash("Actu supprimée ✅", "success")
-        return redirect(url_for("actus"))
+        return redirect(url_for("admin_dashboard"))
 
     @app.post("/photo/<int:photo_id>/delete")
     @login_required
@@ -549,6 +614,7 @@ def create_app():
             amount_eur = int(request.form.get("amount_eur", "10"))
         except ValueError:
             amount_eur = 10
+
         amount_eur = max(1, min(amount_eur, 5000))
 
         if not app.config.get("STRIPE_SECRET_KEY"):
@@ -575,7 +641,6 @@ def create_app():
     def don_success():
         return render_template("don_success.html")
 
-    # Basic error pages
     @app.errorhandler(404)
     def not_found(e):
         return render_template("404.html"), 404
