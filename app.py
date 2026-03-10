@@ -83,7 +83,6 @@ def create_app():
     app.config.from_object(Config)
 
     # Render / reverse proxy (important)
-    # so url_for() + HTTPS work correctly behind Render proxy
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # Logging
@@ -127,13 +126,24 @@ def create_app():
             secure=True,
         )
 
-    # Create tables only if explicitly enabled (recommended: do it once, then disable)
+    # Create tables / migrate minimal changes / seed admin
     with app.app_context():
         auto_create = os.getenv("AUTO_CREATE_DB", "false").lower() in ("1", "true", "yes", "y")
         if auto_create:
             db.create_all()
 
-        # Seed admin (only if tables exist; otherwise app still starts)
+        # MINI MIGRATION: add event_link if missing
+        try:
+            db.session.execute(
+                text("ALTER TABLE news_post ADD COLUMN IF NOT EXISTS event_link VARCHAR(500) DEFAULT ''")
+            )
+            db.session.commit()
+            app.logger.info("Migration OK: event_link ready.")
+        except Exception:
+            db.session.rollback()
+            app.logger.exception("Migration event_link skipped/failed.")
+
+        # Seed admin
         try:
             admin_user = os.getenv("INIT_ADMIN_USER")
             admin_pass = os.getenv("INIT_ADMIN_PASS")
@@ -170,6 +180,11 @@ def create_app():
             stripe_public_key=app.config.get("STRIPE_PUBLIC_KEY", ""),
             external_url=app.config.get("DONATION_EXTERNAL_URL", ""),
         )
+
+    # IMPORTANT: endpoint attendu par base.html
+    @app.get("/membres")
+    def members_entry():
+        return render_template("membres.html")
 
     @app.route("/contact", methods=["GET", "POST"])
     def contact():
@@ -346,7 +361,13 @@ def create_app():
                 flash("Upload impossible.", "error")
                 return redirect(url_for("album_view", album_id=album_id))
 
-            p = Photo(album_id=album_id, file_path=image_url, caption=caption, approved=False, cloudinary_public_id=public_id)
+            p = Photo(
+                album_id=album_id,
+                file_path=image_url,
+                caption=caption,
+                approved=False,
+                cloudinary_public_id=public_id
+            )
             db.session.add(p)
             db.session.commit()
 
@@ -412,7 +433,13 @@ def create_app():
             if file and file.filename:
                 image_path, public_id = save_uploaded_image(file, default_subfolder="actus")
 
-            post = NewsPost(title=title, content=content, image_path=image_path, cloudinary_public_id=public_id)
+            post = NewsPost(
+                title=title,
+                content=content,
+                image_path=image_path,
+                cloudinary_public_id=public_id,
+                event_link=event_link
+            )
             db.session.add(post)
             db.session.commit()
             flash("Actu publiée ✅", "success")
