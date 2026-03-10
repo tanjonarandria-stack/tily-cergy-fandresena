@@ -12,7 +12,20 @@
         <div class="card-body">
           <h2 class="card-title">{{ post.title }}</h2>
           <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
-          <p>{{ post.content }}</p>
+
+          <div class="news-content">
+            <p>{{ post.content }}</p>
+
+            {% if post.event_link %}
+              <div class="event-box">
+                <p class="event-label">📅 Événement à venir</p>
+                <a class="btn secondary" href="{{ post.event_link }}" target="_blank" rel="noopener noreferrer">
+                  Voir l’événement
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
 {% if current_user.is_authenticated and current_user.role == 'ADMIN' %}
   <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette actu ?');">
     <button class="btn secondary" type="submit">Supprimer</button>

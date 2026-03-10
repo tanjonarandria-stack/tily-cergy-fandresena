@@ -34,6 +34,7 @@ class NewsPost(db.Model):
     content = db.Column(db.Text, nullable=False)
     image_path = db.Column(db.String(255), default="")
     cloudinary_public_id = db.Column(db.String(255), default="")
+    event_link = db.Column(db.String(500), default="")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Album(db.Model):
