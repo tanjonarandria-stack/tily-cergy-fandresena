@@ -63,11 +63,29 @@
         <span class="hero-badge">Soutien & solidarité</span>
         <h2>Soutenir Tily Cergy</h2>
         <p class="lead hero-lead">
-          Vos dons aident à financer les activités, les camps, le matériel
-          et l’accompagnement des jeunes.
+          Vos dons aident le <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>
+          à financer les activités, les camps, le matériel et l’accompagnement des jeunes.
         </p>
 
-        <div class="support-card">
+        <div class="hero-panel" style="max-width:760px;">
+          <div class="row-between" style="gap:14px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
+            <strong><span id="hero-don-raised">0</span> € collectés</strong>
+            <span class="muted">Objectif : <strong>1500 €</strong></span>
+          </div>
+
+          <div style="width:100%; height:14px; background:rgba(255,255,255,.10); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.18);">
+            <div
+              id="hero-progress-bar-fill"
+              style="width:0%; height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(124,240,199,.95), rgba(155,182,255,.95)); transition:width 1.2s ease;">
+            </div>
+          </div>
+
+          <p class="muted" style="margin-top:10px; margin-bottom:0;">
+            <span id="hero-don-percent">0</span>% de l’objectif atteint • Chaque don compte vraiment
+          </p>
+        </div>
+
+        <div class="support-card" style="margin-top:14px;">
           <iframe
             id="haWidgetHome"
             title="HelloAsso - Don Tily Cergy"
@@ -80,6 +98,7 @@
 
         <div class="cta">
           <a class="btn" href="{{ url_for('nous_soutenir') }}">Faire un don</a>
+          <a class="btn secondary" href="{{ url_for('nous_soutenir') }}">Voir la collecte</a>
         </div>
       </div>
     </article>
@@ -93,6 +112,52 @@
       <button type="button" class="hero-dot" data-slide="2" aria-label="Aller au slide 3"></button>
     </div>
     <button type="button" class="hero-arrow" id="nextSlide" aria-label="Slide suivante">›</button>
+  </div>
+</section>
+
+<section class="panel" style="margin-top:18px;">
+  <div class="row-between" style="gap:18px; align-items:center; flex-wrap:wrap;">
+    <div>
+      <span class="hero-badge">Soutien au groupe local EEUdF Cergy</span>
+      <h2 style="margin-top:10px;">Aidez Tily Cergy Fandresena à faire grandir les jeunes</h2>
+      <p class="muted" style="max-width:760px;">
+        Votre soutien aide le <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>
+        à financer les activités, les camps, les transports, le matériel et les projets éducatifs.
+        Même un petit don peut avoir un impact concret.
+      </p>
+    </div>
+
+    <div>
+      <a class="btn" href="{{ url_for('nous_soutenir') }}">Soutenir le groupe</a>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px; align-items:center;">
+    <div>
+      <div class="row-between" style="margin-bottom:8px;">
+        <strong><span id="home-don-raised">0</span> € collectés</strong>
+        <span class="muted">Objectif : <strong>1500 €</strong></span>
+      </div>
+
+      <div style="width:100%; height:16px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; border:1px solid var(--border);">
+        <div
+          id="home-progress-bar-fill"
+          style="width:0%; height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(124,240,199,.95), rgba(155,182,255,.95)); transition:width 1.2s ease;">
+        </div>
+      </div>
+
+      <p class="muted" style="margin-top:10px;">
+        <span id="home-don-percent">0</span>% de l’objectif atteint
+      </p>
+    </div>
+
+    <div class="callout" style="margin-top:0;">
+      <h3>Chaque don compte vraiment</h3>
+      <p class="muted" style="margin-bottom:0;">
+        5 € ou 10 € peuvent déjà aider à financer du matériel, un transport
+        ou une activité pour les jeunes.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -218,6 +283,46 @@
 
     showSlide(0);
     startAuto();
+
+    const goal = 1500;
+    const raised = 10;
+    const percent = Math.min((raised / goal) * 100, 100);
+
+    function animateDonationCounter(amountId, percentId, barId) {
+      const raisedEl = document.getElementById(amountId);
+      const percentEl = document.getElementById(percentId);
+      const barEl = document.getElementById(barId);
+
+      let currentAmount = 0;
+      const duration = 1400;
+      const steps = 50;
+      const increment = raised / steps;
+      const interval = duration / steps;
+
+      const counter = setInterval(() => {
+        currentAmount += increment;
+        if (currentAmount >= raised) {
+          currentAmount = raised;
+          clearInterval(counter);
+        }
+        if (raisedEl) {
+          raisedEl.textContent = Math.round(currentAmount);
+        }
+      }, interval);
+
+      if (percentEl) {
+        percentEl.textContent = Math.round(percent);
+      }
+
+      if (barEl) {
+        setTimeout(() => {
+          barEl.style.width = percent + "%";
+        }, 200);
+      }
+    }
+
+    animateDonationCounter("home-don-raised", "home-don-percent", "home-progress-bar-fill");
+    animateDonationCounter("hero-don-raised", "hero-don-percent", "hero-progress-bar-fill");
   });
 </script>
 
