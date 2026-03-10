@@ -16,6 +16,44 @@ from models import db, User, NewsPost, Album, Photo, ContactMessage
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
+SEO_PAGES = {
+    "scout-cergy": {
+        "title": "Scout Cergy – Tily Cergy Fandresena | Scouts EEUdF Cergy",
+        "headline": "Scout Cergy",
+        "intro": "Tily Cergy Fandresena est un groupe scout EEUdF basé à Cergy. Nous proposons des activités pour les jeunes, des camps, des projets solidaires et une vie fraternelle enracinée dans la foi chrétienne.",
+        "meta_description": "Découvrez Tily Cergy Fandresena, groupe scout EEUdF à Cergy : activités jeunes, camps scouts, projets solidaires et vie fraternelle.",
+        "keywords": "scout cergy, groupe scout cergy, scoutisme cergy, tily cergy, eeudf cergy",
+    },
+    "eeudf-cergy": {
+        "title": "EEUdF Cergy – Tily Cergy Fandresena",
+        "headline": "EEUdF Cergy",
+        "intro": "Tily Cergy Fandresena fait vivre le scoutisme à Cergy dans l’esprit des EEUdF. Le groupe accompagne les jeunes à travers des activités, des week-ends, des camps et des projets éducatifs.",
+        "meta_description": "EEUdF Cergy : découvrez le groupe Tily Cergy Fandresena, ses activités, ses camps et ses projets pour les jeunes.",
+        "keywords": "eeudf cergy, scouts eeudf cergy, tily cergy, scout protestant cergy",
+    },
+    "scoutisme-cergy": {
+        "title": "Scoutisme à Cergy – Tily Cergy Fandresena",
+        "headline": "Scoutisme à Cergy",
+        "intro": "Le scoutisme à Cergy permet aux jeunes de grandir, servir et vivre la fraternité. Tily Cergy Fandresena propose des activités éducatives, des sorties, des camps et des projets au service des autres.",
+        "meta_description": "Scoutisme à Cergy : camps, activités éducatives, projets solidaires et vie de groupe avec Tily Cergy Fandresena.",
+        "keywords": "scoutisme cergy, scout cergy, activités jeunes cergy, camp scout cergy",
+    },
+    "groupe-scout-cergy": {
+        "title": "Groupe scout Cergy – Tily Cergy Fandresena",
+        "headline": "Groupe scout à Cergy",
+        "intro": "Vous cherchez un groupe scout à Cergy ? Tily Cergy Fandresena accueille et accompagne les jeunes dans des activités de groupe, des camps, des temps forts et des projets de service.",
+        "meta_description": "Groupe scout à Cergy : découvrez Tily Cergy Fandresena, ses activités, ses camps et sa vie fraternelle.",
+        "keywords": "groupe scout cergy, scout cergy, tily cergy, eeudf cergy",
+    },
+    "scout-protestant-cergy": {
+        "title": "Scout protestant Cergy – Tily Cergy Fandresena",
+        "headline": "Scout protestant à Cergy",
+        "intro": "Tily Cergy Fandresena est un groupe scout enraciné dans la foi chrétienne, engagé dans l’éducation des jeunes, le service, la fraternité et les projets qui font grandir.",
+        "meta_description": "Scout protestant à Cergy : Tily Cergy Fandresena, groupe scout chrétien engagé pour les jeunes.",
+        "keywords": "scout protestant cergy, scout chrétien cergy, tily cergy, eeudf cergy",
+    },
+}
+
 
 def allowed_file(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -82,7 +120,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Render / reverse proxy (important)
+    # Render / reverse proxy
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     # Logging
@@ -117,7 +155,7 @@ def create_app():
     # Stripe
     stripe.api_key = app.config.get("STRIPE_SECRET_KEY", "")
 
-    # Cloudinary config (optional)
+    # Cloudinary config
     if app.config.get("CLOUDINARY_CLOUD_NAME") and app.config.get("CLOUDINARY_API_KEY") and app.config.get("CLOUDINARY_API_SECRET"):
         cloudinary.config(
             cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
@@ -126,13 +164,13 @@ def create_app():
             secure=True,
         )
 
-    # Create tables / migrate minimal changes / seed admin
+    # Create tables / migration / seed admin
     with app.app_context():
         auto_create = os.getenv("AUTO_CREATE_DB", "false").lower() in ("1", "true", "yes", "y")
         if auto_create:
             db.create_all()
 
-        # MINI MIGRATION: add event_link if missing
+        # Add event_link if missing
         try:
             db.session.execute(
                 text("ALTER TABLE news_post ADD COLUMN IF NOT EXISTS event_link VARCHAR(500) DEFAULT ''")
@@ -181,10 +219,28 @@ def create_app():
             external_url=app.config.get("DONATION_EXTERNAL_URL", ""),
         )
 
-    # IMPORTANT: endpoint attendu par base.html
     @app.get("/membres")
     def members_entry():
         return render_template("membres.html")
+
+    @app.get("/<slug>")
+    def seo_page(slug):
+        seo = SEO_PAGES.get(slug)
+        if not seo:
+            return render_template("404.html"), 404
+
+        latest = NewsPost.query.order_by(NewsPost.created_at.desc()).limit(3).all()
+
+        return render_template(
+            "seo_page.html",
+            seo=seo,
+            slug=slug,
+            latest=latest,
+            meta_title=seo["title"],
+            meta_description=seo["meta_description"],
+            meta_keywords=seo["keywords"],
+            canonical_url=url_for("seo_page", slug=slug, _external=True),
+        )
 
     @app.route("/contact", methods=["GET", "POST"])
     def contact():
