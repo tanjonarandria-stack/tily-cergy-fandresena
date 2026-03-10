@@ -1,18 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Admin</h1>
+<section class="page-head">
+  <h1>Administration</h1>
+  <p class="lead">
+    Gère les demandes de rôles, publie des actualités, consulte les messages reçus et administre les publications.
+  </p>
+</section>
 
 <div class="grid-2">
   <div class="panel">
     <h2>Valider les rôles (KP / RESPONSABLE)</h2>
+
     {% if pending %}
       <ul class="list">
         {% for u in pending %}
           <li class="list-item">
             <div>
-              <strong>{{ u.username }}</strong>
+              <strong>{{ u.username }}</strong><br>
               <span class="muted">a demandé : {{ u.role_requested }}</span>
             </div>
+
             <form method="post">
               <input type="hidden" name="action" value="validate_role">
               <input type="hidden" name="user_id" value="{{ u.id }}">
@@ -28,70 +35,130 @@
 
   <div class="panel">
     <h2>Publier une actu</h2>
+
     <form method="post" enctype="multipart/form-data" class="form">
       <input type="hidden" name="action" value="new_post">
 
-      <label>Titre</label>
-      <input name="title" required>
+      <label for="title">Titre</label>
+      <input
+        id="title"
+        name="title"
+        required
+        placeholder="Ex. Camp de printemps 2026"
+      >
 
-      <label>Contenu</label>
-      <textarea name="content" rows="6" required placeholder="Texte de l'événement, infos pratiques, etc."></textarea>
+      <label for="content">Contenu</label>
+      <textarea
+        id="content"
+        name="content"
+        rows="6"
+        required
+        placeholder="Texte de l'événement, infos pratiques, horaires, lieu, matériel à prévoir..."
+      ></textarea>
 
-      <label>Lien d’événement (optionnel)</label>
-      <input type="url" name="event_link" placeholder="https://...">
+      <label for="event_link">Lien d’événement (optionnel)</label>
+      <input
+        id="event_link"
+        type="url"
+        name="event_link"
+        placeholder="https://..."
+      >
 
-      <label>Flyer / image (optionnel)</label>
-      <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp">
+      <label for="image">Flyer / image (optionnel)</label>
+      <input
+        id="image"
+        type="file"
+        name="image"
+        accept=".png,.jpg,.jpeg,.webp"
+      >
 
       <button class="btn" type="submit">Publier</button>
     </form>
   </div>
 </div>
 
-<h2>Messages reçus (Contact)</h2>
-<p class="muted">Messages envoyés via la page Contact.</p>
-
-{% if messages %}
-  <div class="cards-grid">
-    {% for m in messages %}
-      <article class="card">
-        <div class="card-body">
-          <h3>{{ m.subject }}</h3>
-          <p class="muted">{{ m.created_at.strftime("%d/%m/%Y %H:%M") }} — {{ m.name }} ({{ m.email }})</p>
-          <p>{{ m.message }}</p>
-        </div>
-      </article>
-    {% endfor %}
+<section style="margin-top: 26px;">
+  <div class="row-between" style="margin-bottom: 10px;">
+    <div>
+      <h2>Messages reçus (Contact)</h2>
+      <p class="muted">Messages envoyés via la page Contact.</p>
+    </div>
   </div>
-{% else %}
-  <p class="muted">Aucun message.</p>
-{% endif %}
 
-<h2>Dernières actus</h2>
-
-{% if posts %}
-  <div class="cards-grid">
-    {% for post in posts %}
-      <article class="card">
-        <div class="card-body">
-          <h3>{{ post.title }}</h3>
-          <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
-          <p>{{ post.content[:200] }}{% if post.content|length > 200 %}…{% endif %}</p>
-
-          {% if post.event_link %}
-            <p>
-              <a class="btn secondary" href="{{ post.event_link }}" target="_blank" rel="noopener">Voir le lien</a>
+  {% if messages %}
+    <div class="cards-grid">
+      {% for m in messages %}
+        <article class="card">
+          <div class="card-body">
+            <h3>{{ m.subject }}</h3>
+            <p class="muted">
+              {{ m.created_at.strftime("%d/%m/%Y %H:%M") }} — {{ m.name }} ({{ m.email }})
             </p>
+            <p style="white-space: pre-line;">{{ m.message }}</p>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="panel">
+      <p class="muted">Aucun message.</p>
+    </div>
+  {% endif %}
+</section>
+
+<section style="margin-top: 26px;">
+  <div class="row-between" style="margin-bottom: 10px;">
+    <div>
+      <h2>Dernières actus</h2>
+      <p class="muted">Gestion rapide des publications existantes.</p>
+    </div>
+
+    <div class="row">
+      <a class="btn secondary" href="{{ url_for('actus') }}">Voir la page actualités</a>
+      <a class="btn secondary" href="{{ url_for('member_area') }}">Voir les albums</a>
+    </div>
+  </div>
+
+  {% if posts %}
+    <div class="cards-grid">
+      {% for post in posts %}
+        <article class="card">
+          {% if post.image_path %}
+            <img class="card-img" src="{{ post.image_path }}" alt="{{ post.title }}">
           {% endif %}
 
-          <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette actu ?');">
-            <button class="btn secondary" type="submit">Supprimer</button>
-          </form>
-        </div>
-      </article>
-    {% endfor %}
-  </div>
-{% else %}
-  <p class="muted">Aucune actu.</p>
-{% endif %}
+          <div class="card-body">
+            <h3>{{ post.title }}</h3>
+            <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+
+            <p style="white-space: pre-line;">
+              {{ post.content[:200] }}{% if post.content|length > 200 %}…{% endif %}
+            </p>
+
+            {% if post.event_link %}
+              <p style="margin-top: 12px;">
+                <a class="btn secondary" href="{{ post.event_link }}" target="_blank" rel="noopener">
+                  Voir le lien
+                </a>
+              </p>
+            {% endif %}
+
+            <form
+              method="post"
+              action="{{ url_for('delete_post', post_id=post.id) }}"
+              onsubmit="return confirm('Supprimer cette actu ?');"
+              style="margin-top: 12px;"
+            >
+              <button class="btn secondary" type="submit">Supprimer</button>
+            </form>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="panel">
+      <p class="muted">Aucune actu.</p>
+    </div>
+  {% endif %}
+</section>
 {% endblock %}

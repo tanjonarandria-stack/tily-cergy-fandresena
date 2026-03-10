@@ -3,14 +3,19 @@
 <div class="row-between">
   <div>
     <h1>Albums</h1>
-    <p class="muted">Bienvenue {{ current_user.username }} — rôle: {{ current_user.role }}{% if not current_user.role_validated %} (en attente){% endif %}</p>
+    <p class="muted">
+      Bienvenue {{ current_user.username }} — rôle : {{ current_user.role }}{% if not current_user.role_validated %} (en attente){% endif %}
+    </p>
   </div>
+
   <div class="row">
     <a class="btn secondary" href="{{ url_for('change_password') }}">Changer mot de passe</a>
+
     {% if current_user.role == "ADMIN" %}
       <a class="btn" href="{{ url_for('admin_dashboard') }}">Admin</a>
     {% endif %}
-    {% if current_user.is_staff() %}
+
+    {% if current_user.is_staff() or current_user.role == "ADMIN" %}
       <a class="btn" href="{{ url_for('album_new') }}">Nouvel album</a>
     {% endif %}
   </div>
@@ -20,30 +25,36 @@
   <div class="cards-grid">
     {% for a in albums %}
       {% if a.approved or current_user.is_staff() or current_user.role == "ADMIN" %}
-        <div class="card">
+        <article class="card">
           <a class="link-card" href="{{ url_for('album_view', album_id=a.id) }}">
             <div class="card-body">
               <h2 class="card-title">{{ a.title }}</h2>
-              <p class="muted">{{ a.created_at.strftime("%d/%m/%Y") }}
+              <p class="muted">
+                {{ a.created_at.strftime("%d/%m/%Y") }}
                 {% if not a.approved %} — <strong>Album en attente</strong>{% endif %}
               </p>
-              <p>{{ a.description[:140] }}{% if a.description|length > 140 %}…{% endif %}</p>
+              <p>
+                {{ a.description[:140] if a.description else "Aucune description." }}
+                {% if a.description and a.description|length > 140 %}…{% endif %}
+              </p>
             </div>
           </a>
 
           {% if (current_user.is_staff() or current_user.role == "ADMIN") and not a.approved %}
-            <div class="card-body">
+            <div class="card-body" style="padding-top: 0;">
               <form method="post" action="{{ url_for('album_approve', album_id=a.id) }}" onsubmit="return confirm('Approuver cet album ?');">
                 <button class="btn" type="submit">Approuver</button>
               </form>
             </div>
           {% endif %}
-        </div>
+        </article>
       {% endif %}
     {% endfor %}
   </div>
 {% else %}
-
-  <p class="muted">Aucun album pour le moment.</p>
+  <div class="panel">
+    <h2>Aucun album pour le moment</h2>
+    <p class="muted">Les albums du groupe apparaîtront ici.</p>
+  </div>
 {% endif %}
 {% endblock %}

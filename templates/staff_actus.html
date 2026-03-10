@@ -1,21 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Publier une actu</h1>
-<p class="muted">Accessible aux KP/RESPONSABLE validés (et ADMIN). Tu peux ajouter un flyer (image).</p>
+<section class="page-head">
+  <h1>Publier une actu</h1>
+  <p class="muted">
+    Accessible aux KP / RESPONSABLE validés et aux administrateurs.
+  </p>
+</section>
 
-<form method="post" enctype="multipart/form-data" class="form">
-  <label>Titre</label>
-  <input name="title" required>
+<div class="grid-2">
+  <div class="panel">
+    <h2>Nouvelle actualité</h2>
 
-  <label>Contenu</label>
-  <textarea name="content" rows="6" required placeholder="Texte de l'événement, infos pratiques, etc."></textarea>
+    <form method="post" enctype="multipart/form-data" class="form">
+      <label for="title">Titre</label>
+      <input id="title" name="title" required placeholder="Ex. Camp de printemps 2026">
 
-  <label>Lien événement / Facebook (optionnel)</label>
-  <input name="event_link" type="url" placeholder="https://facebook.com/events/...">
+      <label for="content">Contenu</label>
+      <textarea id="content" name="content" rows="6" required placeholder="Texte de l'événement, infos pratiques, horaires, lieu, matériel à prévoir..."></textarea>
 
-  <label>Flyer / image (optionnel)</label>
-  <input type="file" name="image" accept=".png,.jpg,.jpeg,.webp">
+      <label for="event_link">Lien événement / Facebook (optionnel)</label>
+      <input id="event_link" name="event_link" type="url" placeholder="https://facebook.com/events/...">
 
-  <button class="btn" type="submit">Publier</button>
-</form>
+      <label for="image">Flyer / image (optionnel)</label>
+      <input id="image" type="file" name="image" accept=".png,.jpg,.jpeg,.webp">
+
+      <button class="btn" type="submit">Publier</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Conseils</h2>
+    <ul class="list">
+      <li class="list-item">Mets un titre court et clair.</li>
+      <li class="list-item">Ajoute toutes les infos pratiques dans le contenu.</li>
+      <li class="list-item">Ajoute un lien si les familles doivent s’inscrire ou consulter un événement.</li>
+      <li class="list-item">Tu peux joindre un flyer au format image.</li>
+    </ul>
+
+    <p style="margin-top: 16px;">
+      <a class="btn secondary" href="{{ url_for('actus') }}">Voir les actualités</a>
+    </p>
+
+    {% if current_user.role == "ADMIN" %}
+      <p style="margin-top: 12px;">
+        <a class="btn secondary" href="{{ url_for('admin_dashboard') }}">Aller à l’administration</a>
+      </p>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}

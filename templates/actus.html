@@ -1,20 +1,47 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Actualités</h1>
+<section class="page-head">
+  <h1>Actualités</h1>
+  <p class="lead">
+    Retrouvez ici les dernières nouvelles, événements, annonces et temps forts de Tily Cergy Fandresena.
+  </p>
+</section>
+
+{% if current_user.is_authenticated %}
+  <div class="panel" style="margin-bottom: 24px;">
+    <div class="row-between">
+      <div>
+        <strong>Espace connecté</strong>
+        <p class="muted" style="margin: 6px 0 0 0;">
+          Vous pouvez accéder aux outils internes selon votre rôle.
+        </p>
+      </div>
+
+      <div class="row">
+        {% if current_user.role == "ADMIN" %}
+          <a class="btn" href="{{ url_for('admin_dashboard') }}">Administration</a>
+        {% elif current_user.is_staff() %}
+          <a class="btn" href="{{ url_for('staff_actus') }}">Publier une actu</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
 
 {% if posts %}
   <div class="cards-grid">
     {% for post in posts %}
       <article class="card">
         {% if post.image_path %}
-          <img class="card-img" src="{{ post.image_path }}" alt="Image actu">
+          <img class="card-img" src="{{ post.image_path }}" alt="{{ post.title }}">
         {% endif %}
+
         <div class="card-body">
           <h2 class="card-title">{{ post.title }}</h2>
-          <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
+          <p class="muted">Publié le {{ post.created_at.strftime("%d/%m/%Y") }}</p>
 
           <div class="news-content">
-            <p>{{ post.content }}</p>
+            <p style="white-space: pre-line;">{{ post.content }}</p>
 
             {% if post.event_link %}
               <div class="event-box">
@@ -26,20 +53,35 @@
             {% endif %}
           </div>
 
-{% if current_user.is_authenticated and current_user.role == 'ADMIN' %}
-  <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette actu ?');">
-    <button class="btn secondary" type="submit">Supprimer</button>
-  </form>
-{% endif %}
+          {% if current_user.is_authenticated and current_user.role == "ADMIN" %}
+            <form method="post" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Supprimer cette actu ?');" style="margin-top: 14px;">
+              <button class="btn secondary" type="submit">Supprimer</button>
+            </form>
+          {% endif %}
         </div>
       </article>
     {% endfor %}
   </div>
 {% else %}
-  <p class="muted">Aucune actualité pour le moment.</p>
+  <div class="panel">
+    <h2>Aucune actualité pour le moment</h2>
+    <p class="muted">Les prochaines informations du groupe apparaîtront ici.</p>
+
+    {% if current_user.is_authenticated and current_user.role == "ADMIN" %}
+      <p style="margin-top: 14px;">
+        <a class="btn" href="{{ url_for('admin_dashboard') }}">Aller à l’administration</a>
+      </p>
+    {% elif current_user.is_authenticated and current_user.is_staff() %}
+      <p style="margin-top: 14px;">
+        <a class="btn" href="{{ url_for('staff_actus') }}">Publier une actu</a>
+      </p>
+    {% endif %}
+  </div>
 {% endif %}
 
 {% if current_user.is_authenticated and current_user.role == "ADMIN" %}
-  <p><a class="btn" href="{{ url_for('admin_dashboard') }}">Aller à l’admin</a></p>
+  <p style="margin-top: 18px;">
+    <a class="btn secondary" href="{{ url_for('admin_dashboard') }}">Aller à l’admin</a>
+  </p>
 {% endif %}
 {% endblock %}

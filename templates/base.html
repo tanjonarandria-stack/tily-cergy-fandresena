@@ -48,101 +48,9 @@
     ]
   }
   </script>
+
   <meta name="google-site-verification" content="ISZPKWJ2dIetG9gX4RRtXfibx1H3msfF5gzQYm5eMAc" />
 </head>
-
-<script>
-(function(){
-  function scorePassword(pw){
-    let s = 0;
-    if (!pw) return 0;
-    if (pw.length >= 8) s += 1;
-    if (pw.length >= 12) s += 1;
-    if (/[a-z]/.test(pw)) s += 1;
-    if (/[A-Z]/.test(pw)) s += 1;
-    if (/[0-9]/.test(pw)) s += 1;
-    if (/[^A-Za-z0-9]/.test(pw)) s += 1;
-    if (/^(.)\1+$/.test(pw)) s = 1;
-    return Math.min(s, 6);
-  }
-
-  function levelFromScore(s){
-    if (s <= 2) return {cls:"pw-weak", label:"Faible", pct: 30};
-    if (s <= 4) return {cls:"pw-mid", label:"Moyen", pct: 65};
-    return {cls:"pw-strong", label:"Fort", pct: 100};
-  }
-
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-password-toggle]");
-    if (!btn) return;
-    const wrap = btn.closest(".password-field");
-    if (!wrap) return;
-    const input = wrap.querySelector("[data-password-input]");
-    if (!input) return;
-    const eye = btn.querySelector("[data-eye]");
-    const eyeOff = btn.querySelector("[data-eye-off]");
-    const hidden = input.type === "password";
-    input.type = hidden ? "text" : "password";
-    if (eye && eyeOff){
-      eye.style.display = hidden ? "none" : "block";
-      eyeOff.style.display = hidden ? "block" : "none";
-    }
-    btn.animate(
-      [{ transform: "translateY(-50%) scale(1)" },
-       { transform: "translateY(-50%) scale(0.92)" },
-       { transform: "translateY(-50%) scale(1)" }],
-      { duration: 160, easing: "ease-out" }
-    );
-  });
-
-  function wirePasswordUI(){
-    const pw = document.querySelector("[data-pw-main]");
-    if (!pw) return;
-
-    const meter = document.querySelector("[data-pw-meter]");
-    const fill = document.querySelector("[data-pw-fill]");
-    const label = document.querySelector("[data-pw-label]");
-    const confirm = document.querySelector("[data-pw-confirm]");
-    const confirmHint = document.querySelector("[data-pw-confirm-hint]");
-
-    function updateStrength(){
-      const s = scorePassword(pw.value);
-      const lvl = levelFromScore(s);
-      if (meter){
-        meter.classList.remove("pw-weak","pw-mid","pw-strong");
-        meter.classList.add(lvl.cls);
-      }
-      if (fill) fill.style.width = (pw.value ? lvl.pct : 0) + "%";
-      if (label) label.textContent = pw.value ? ("Force : " + lvl.label) : "Force : —";
-    }
-
-    function updateConfirm(){
-      if (!confirm || !confirmHint) return;
-      if (!confirm.value){
-        confirmHint.textContent = "Confirmation : —";
-        confirmHint.classList.remove("ok","bad");
-        return;
-      }
-      if (confirm.value === pw.value){
-        confirmHint.textContent = "✅ Mot de passe confirmé";
-        confirmHint.classList.add("ok");
-        confirmHint.classList.remove("bad");
-      }else{
-        confirmHint.textContent = "❌ Les mots de passe ne correspondent pas";
-        confirmHint.classList.add("bad");
-        confirmHint.classList.remove("ok");
-      }
-    }
-
-    pw.addEventListener("input", () => { updateStrength(); updateConfirm(); });
-    if (confirm) confirm.addEventListener("input", updateConfirm);
-    updateStrength();
-    updateConfirm();
-  }
-
-  document.addEventListener("DOMContentLoaded", wirePasswordUI);
-})();
-</script>
 
 <body>
   <header class="topbar">
@@ -166,6 +74,7 @@
           {% elif current_user.is_staff() %}
             <a class="pill" href="{{ url_for('staff_actus') }}">Publier une actu</a>
           {% endif %}
+
           <a class="pill" href="{{ url_for('member_area') }}">Mes albums</a>
           <a class="pill" href="{{ url_for('change_password') }}">Mot de passe</a>
           <a class="pill danger" href="{{ url_for('logout') }}">Déconnexion</a>
@@ -225,6 +134,118 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      function scorePassword(pw) {
+        let s = 0;
+        if (!pw) return 0;
+        if (pw.length >= 8) s += 1;
+        if (pw.length >= 12) s += 1;
+        if (/[a-z]/.test(pw)) s += 1;
+        if (/[A-Z]/.test(pw)) s += 1;
+        if (/[0-9]/.test(pw)) s += 1;
+        if (/[^A-Za-z0-9]/.test(pw)) s += 1;
+        if (/^(.)\1+$/.test(pw)) s = 1;
+        return Math.min(s, 6);
+      }
+
+      function levelFromScore(s) {
+        if (s <= 2) return { cls: "pw-weak", label: "Faible", pct: 30 };
+        if (s <= 4) return { cls: "pw-mid", label: "Moyen", pct: 65 };
+        return { cls: "pw-strong", label: "Fort", pct: 100 };
+      }
+
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-password-toggle]");
+        if (!btn) return;
+
+        const wrap = btn.closest(".password-field");
+        if (!wrap) return;
+
+        const input = wrap.querySelector("[data-password-input]");
+        if (!input) return;
+
+        const eye = btn.querySelector("[data-eye]");
+        const eyeOff = btn.querySelector("[data-eye-off]");
+        const hidden = input.type === "password";
+
+        input.type = hidden ? "text" : "password";
+
+        if (eye && eyeOff) {
+          eye.style.display = hidden ? "none" : "block";
+          eyeOff.style.display = hidden ? "block" : "none";
+        }
+
+        btn.animate(
+          [
+            { transform: "translateY(-50%) scale(1)" },
+            { transform: "translateY(-50%) scale(0.92)" },
+            { transform: "translateY(-50%) scale(1)" }
+          ],
+          { duration: 160, easing: "ease-out" }
+        );
+      });
+
+      function wirePasswordUI() {
+        const pw = document.querySelector("[data-pw-main]");
+        if (!pw) return;
+
+        const meter = document.querySelector("[data-pw-meter]");
+        const fill = document.querySelector("[data-pw-fill]");
+        const label = document.querySelector("[data-pw-label]");
+        const confirm = document.querySelector("[data-pw-confirm]");
+        const confirmHint = document.querySelector("[data-pw-confirm-hint]");
+
+        function updateStrength() {
+          const s = scorePassword(pw.value);
+          const lvl = levelFromScore(s);
+
+          if (meter) {
+            meter.classList.remove("pw-weak", "pw-mid", "pw-strong");
+            meter.classList.add(lvl.cls);
+          }
+
+          if (fill) fill.style.width = (pw.value ? lvl.pct : 0) + "%";
+          if (label) label.textContent = pw.value ? ("Force : " + lvl.label) : "Force : —";
+        }
+
+        function updateConfirm() {
+          if (!confirm || !confirmHint) return;
+
+          if (!confirm.value) {
+            confirmHint.textContent = "Confirmation : —";
+            confirmHint.classList.remove("ok", "bad");
+            return;
+          }
+
+          if (confirm.value === pw.value) {
+            confirmHint.textContent = "✅ Mot de passe confirmé";
+            confirmHint.classList.add("ok");
+            confirmHint.classList.remove("bad");
+          } else {
+            confirmHint.textContent = "❌ Les mots de passe ne correspondent pas";
+            confirmHint.classList.add("bad");
+            confirmHint.classList.remove("ok");
+          }
+        }
+
+        pw.addEventListener("input", () => {
+          updateStrength();
+          updateConfirm();
+        });
+
+        if (confirm) {
+          confirm.addEventListener("input", updateConfirm);
+        }
+
+        updateStrength();
+        updateConfirm();
+      }
+
+      document.addEventListener("DOMContentLoaded", wirePasswordUI);
+    })();
+  </script>
 
   <script>
     if ("serviceWorker" in navigator) {

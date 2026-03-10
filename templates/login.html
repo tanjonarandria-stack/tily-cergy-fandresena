@@ -1,47 +1,60 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Connexion</h1>
+<section class="page-head">
+  <h1>Connexion</h1>
+  <p class="lead">Accède à l’espace membres, aux albums et aux outils internes selon ton rôle.</p>
+</section>
 
-<form method="post" class="form">
-  <label>Login</label>
-  <input name="username" autocomplete="username" required>
-
-  <label>Mot de passe</label>
-
-  <div class="password-field">
+<div class="panel" style="max-width: 560px;">
+  <form method="post" class="form">
+    <label for="username">Login</label>
     <input
-      name="password"
-      type="password"
-      autocomplete="current-password"
+      id="username"
+      name="username"
+      autocomplete="username"
       required
-      data-password-input
+      placeholder="Ton login"
     >
 
-    <button type="button" class="password-toggle" data-password-toggle>
-      
-      <!-- OEIL -->
-      <svg data-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+    <label for="password">Mot de passe</label>
 
-      <!-- OEIL BARRE -->
-      <svg data-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.78 21.78 0 0 1 5.06-6.94"/>
-        <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-2.56 3.94"/>
-        <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
-        <path d="M1 1l22 22"/>
-      </svg>
+    <div class="password-field">
+      <input
+        id="password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        required
+        placeholder="Ton mot de passe"
+        data-password-input
+      >
 
-    </button>
-  </div>
+      <button
+        type="button"
+        class="password-toggle"
+        data-password-toggle
+        aria-label="Afficher ou masquer le mot de passe"
+      >
+        <svg data-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
 
-  <button class="btn" type="submit">Se connecter</button>
-</form>
+        <svg data-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true">
+          <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.78 21.78 0 0 1 5.06-6.94"/>
+          <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-2.56 3.94"/>
+          <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
+          <path d="M1 1l22 22"/>
+        </svg>
+      </button>
+    </div>
 
-<p class="muted">
-Pas de compte ? 
-<a class="link" href="{{ url_for('register') }}">Créer un compte</a>
-</p>
+    <button class="btn" type="submit">Se connecter</button>
+  </form>
 
+  <p class="muted" style="margin-top: 16px;">
+    Pas de compte ?
+    <a class="link" href="{{ url_for('register') }}">Créer un compte</a>
+  </p>
+</div>
 {% endblock %}

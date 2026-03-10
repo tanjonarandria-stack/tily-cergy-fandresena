@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Créer un album</h1>
+<p class="muted">Réservé aux KP / RESPONSABLE validés et aux administrateurs.</p>
 
 <form method="post" class="form">
-  <label>Titre</label>
-  <input name="title" required>
+  <label for="title">Titre</label>
+  <input id="title" name="title" required placeholder="Ex : Week-end de groupe">
 
-  <label>Description</label>
-  <textarea name="description" rows="4" placeholder="Ex: Week-end de groupe, activité service, camp..."></textarea>
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="4" placeholder="Ex : week-end de groupe, activité de service, camp, sortie..."></textarea>
 
   <label class="checkbox">
     <input type="checkbox" name="consent" value="yes" required>

@@ -1,92 +1,115 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Créer un compte</h1>
+<section class="page-head">
+  <h1>Créer un compte</h1>
+  <p class="lead">
+    Crée ton compte membre. Les rôles KP et RESPONSABLE doivent être validés par un administrateur.
+  </p>
+</section>
 
-<form method="post" class="form">
-  <label>Login</label>
-  <input name="username" autocomplete="username" required>
-
-  <label>Mot de passe (8 caractères minimum)</label>
-
-  <div class="password-field">
+<div class="panel" style="max-width: 620px;">
+  <form method="post" class="form">
+    <label for="username">Login</label>
     <input
-      name="password"
-      type="password"
-      autocomplete="new-password"
+      id="username"
+      name="username"
+      autocomplete="username"
       required
-      minlength="8"
-      data-password-input
-      data-pw-main
+      placeholder="Choisis un login"
     >
 
-    <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher le mot de passe">
-      <!-- OEIL -->
-      <svg data-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+    <label for="password">Mot de passe (8 caractères minimum)</label>
 
-      <!-- OEIL BARRE -->
-      <svg data-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.78 21.78 0 0 1 5.06-6.94"/>
-        <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-2.56 3.94"/>
-        <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
-        <path d="M1 1l22 22"/>
-      </svg>
-    </button>
-  </div>
+    <div class="password-field">
+      <input
+        id="password"
+        name="password"
+        type="password"
+        autocomplete="new-password"
+        required
+        minlength="8"
+        placeholder="Choisis un mot de passe"
+        data-password-input
+        data-pw-main
+      >
 
-  <!-- Barre de force -->
-  <div class="pw-meter" data-pw-meter>
-    <div class="pw-bar"><div class="pw-fill" data-pw-fill></div></div>
-    <div class="pw-label" data-pw-label>Force : —</div>
-  </div>
+      <button
+        type="button"
+        class="password-toggle"
+        data-password-toggle
+        aria-label="Afficher ou masquer le mot de passe"
+      >
+        <svg data-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
 
-  <label>Confirmer le mot de passe</label>
+        <svg data-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true">
+          <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.78 21.78 0 0 1 5.06-6.94"/>
+          <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-2.56 3.94"/>
+          <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
+          <path d="M1 1l22 22"/>
+        </svg>
+      </button>
+    </div>
 
-  <div class="password-field">
-    <input
-      name="password_confirm"
-      type="password"
-      autocomplete="new-password"
-      required
-      minlength="8"
-      data-password-input
-      data-pw-confirm
-    >
+    <div class="pw-meter" data-pw-meter>
+      <div class="pw-bar">
+        <div class="pw-fill" data-pw-fill></div>
+      </div>
+      <div class="pw-label" data-pw-label>Force : —</div>
+    </div>
 
-    <button type="button" class="password-toggle" data-password-toggle aria-label="Afficher le mot de passe">
-      <!-- OEIL -->
-      <svg data-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
-        <circle cx="12" cy="12" r="3"/>
-      </svg>
+    <label for="password_confirm">Confirmer le mot de passe</label>
 
-      <!-- OEIL BARRE -->
-      <svg data-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
-        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.78 21.78 0 0 1 5.06-6.94"/>
-        <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-2.56 3.94"/>
-        <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
-        <path d="M1 1l22 22"/>
-      </svg>
-    </button>
-  </div>
+    <div class="password-field">
+      <input
+        id="password_confirm"
+        name="password_confirm"
+        type="password"
+        autocomplete="new-password"
+        required
+        minlength="8"
+        placeholder="Retape le mot de passe"
+        data-password-input
+        data-pw-confirm
+      >
 
-  <div class="pw-hint" data-pw-confirm-hint>Confirmation : —</div>
+      <button
+        type="button"
+        class="password-toggle"
+        data-password-toggle
+        aria-label="Afficher ou masquer le mot de passe"
+      >
+        <svg data-eye viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
 
-  <label>Rôle demandé</label>
-  <select name="role">
-    <option value="JEUNE">Enfant / Ado (Jeune membre)</option>
-    <option value="RESPONSABLE">RESPONSABLE (encadrant)</option>
-    <option value="KP">KP (membre du bureau)</option>
-  </select>
+        <svg data-eye-off viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none" aria-hidden="true">
+          <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6.5 0-10-7-10-7a21.78 21.78 0 0 1 5.06-6.94"/>
+          <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a21.8 21.8 0 0 1-2.56 3.94"/>
+          <path d="M14.12 14.12A3 3 0 0 1 9.88 9.88"/>
+          <path d="M1 1l22 22"/>
+        </svg>
+      </button>
+    </div>
 
-  <button class="btn" type="submit">Créer</button>
-</form>
+    <div class="pw-hint" data-pw-confirm-hint>Confirmation : —</div>
 
-<p class="muted">
-  Déjà un compte ?
-  <a class="link" href="{{ url_for('login') }}">Connexion</a>
-</p>
+    <label for="role">Rôle demandé</label>
+    <select id="role" name="role">
+      <option value="JEUNE">Enfant / Ado (Jeune membre)</option>
+      <option value="RESPONSABLE">RESPONSABLE (encadrant)</option>
+      <option value="KP">KP (membre du bureau)</option>
+    </select>
 
+    <button class="btn" type="submit">Créer le compte</button>
+  </form>
+
+  <p class="muted" style="margin-top: 16px;">
+    Déjà un compte ?
+    <a class="link" href="{{ url_for('login') }}">Connexion</a>
+  </p>
+</div>
 {% endblock %}
