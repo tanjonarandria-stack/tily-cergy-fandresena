@@ -2,150 +2,145 @@
 {% block content %}
 
 <section class="hero-card">
-  <h1>Nous soutenir</h1>
-  <p class="lead">
-    En soutenant <strong>Tily Cergy Fandresena</strong>, groupe local des
-    <strong>EEUdF à Cergy</strong>, vous aidez concrètement les jeunes à vivre
-    des activités éducatives, des camps, des sorties et des projets solidaires.
-    Même un petit don peut avoir un vrai impact.
-  </p>
-
-  <div class="callout" style="margin-top:14px;">
-    <div class="row-between" style="gap:14px; align-items:center; flex-wrap:wrap; margin-bottom:8px;">
-      <strong><span id="don-raised">0</span> € collectés</strong>
-      <span class="muted">Objectif : <strong>1500 €</strong></span>
+  <div class="row-between" style="gap:18px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="max-width:760px;">
+      <span class="hero-badge">Soutien au groupe local EEUdF Cergy</span>
+      <h1 style="margin-top:10px;">Nous soutenir</h1>
+      <p class="lead" style="margin-bottom:0;">
+        En soutenant <strong>Tily Cergy Fandresena</strong>, groupe local des
+        <strong>Éclaireuses et Éclaireurs Unionistes de France à Cergy</strong>,
+        vous aidez concrètement les jeunes à vivre des activités éducatives,
+        des camps, des sorties et des projets solidaires.
+      </p>
     </div>
 
-    <div style="width:100%; height:16px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; border:1px solid var(--border);">
-      <div
-        id="progress-bar-fill"
-        style="width:0%; height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(124,240,199,.95), rgba(155,182,255,.95)); transition:width 1.2s ease;">
+    <div class="panel" style="min-width:260px; flex:0 1 320px; padding:16px;">
+      <p class="muted" style="margin:0 0 6px 0;">Collecte en cours</p>
+      <div class="row-between" style="margin-bottom:8px; gap:10px;">
+        <strong><span id="don-raised">0</span> € collectés</strong>
+        <span class="muted">/ 1500 €</span>
       </div>
-    </div>
 
-    <p class="muted" style="margin-top:10px; margin-bottom:0;">
-      <span id="don-percent">0</span>% de l’objectif atteint •
-      5 € ou 10 € peuvent déjà aider pour du matériel, un transport ou une activité.
-    </p>
-  </div>
+      <div style="width:100%; height:14px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; border:1px solid var(--border);">
+        <div
+          id="progress-bar-fill"
+          style="width:0%; height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(124,240,199,.95), rgba(155,182,255,.95)); transition:width 1.2s ease;">
+        </div>
+      </div>
 
-  <div class="grid-3" style="margin-top:14px;">
-    <div class="panel">
-      <h3>5 €</h3>
-      <p class="muted">Petit matériel</p>
-    </div>
-    <div class="panel">
-      <h3>20 €</h3>
-      <p class="muted">Activité ou transport</p>
-    </div>
-    <div class="panel">
-      <h3>50 €</h3>
-      <p class="muted">Projet ou camp</p>
+      <p class="muted" style="margin:10px 0 0 0;">
+        <span id="don-percent">0</span>% de l’objectif atteint
+      </p>
     </div>
   </div>
 </section>
 
-<div class="grid-2" style="margin-top:18px; align-items:start;">
-
+<section class="grid-2" style="margin-top:18px; align-items:start;">
   <div class="panel">
-    <h2>Faire un don</h2>
+    <h2>Pourquoi donner ?</h2>
     <p class="muted">
-      Soutenez directement les activités du <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>
-      via la plateforme sécurisée HelloAsso.
+      Chaque contribution aide à rendre les activités plus accessibles aux jeunes
+      du <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>.
     </p>
 
-    <div style="display:flex; justify-content:center; margin-top:14px;">
-      <iframe
-        id="haWidgetVignette"
-        title="HelloAsso - Vignette don"
-        allowtransparency="true"
-        src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-vignette"
-        style="width:350px; height:450px; max-width:100%; border:none; border-radius:16px; background:#fff;"
-        scrolling="no">
-      </iframe>
+    <div class="grid-3" style="margin-top:14px;">
+      <div class="panel" style="padding:14px;">
+        <h3>5 €</h3>
+        <p class="muted">Petit matériel</p>
+      </div>
+      <div class="panel" style="padding:14px;">
+        <h3>20 €</h3>
+        <p class="muted">Transport ou activité</p>
+      </div>
+      <div class="panel" style="padding:14px;">
+        <h3>50 €</h3>
+        <p class="muted">Projet ou camp</p>
+      </div>
     </div>
-  </div>
 
-  <div class="panel">
-    <h2>Votre don aide à financer</h2>
-    <ul class="list" style="margin-top:10px;">
-      <li class="list-item">Le matériel pour les activités</li>
-      <li class="list-item">Les transports pour les sorties</li>
-      <li class="list-item">Les camps et week-ends scouts</li>
-      <li class="list-item">Les projets solidaires</li>
-    </ul>
-  </div>
+    <div class="callout">
+      <h3>Votre soutien permet de financer</h3>
+      <ul class="list" style="margin-top:10px;">
+        <li class="list-item">Le matériel pour les activités</li>
+        <li class="list-item">Les transports pour les sorties</li>
+        <li class="list-item">Les camps et week-ends scouts</li>
+        <li class="list-item">Les projets solidaires</li>
+      </ul>
+    </div>
 
-</div>
-
-<div class="grid-2" style="margin-top:20px; align-items:start;">
-
-  <div class="panel">
-    <h2>Don direct par carte</h2>
-    <p class="muted">
-      Vous pouvez effectuer votre don directement ci-dessous sans quitter le site.
+    <p class="muted" style="margin-top:14px; margin-bottom:0;">
+      Même <strong>5 €</strong> ou <strong>10 €</strong> peuvent déjà avoir un impact concret.
     </p>
+  </div>
 
-    <div class="callout" style="margin-bottom:14px;">
-      <h3>Merci pour votre soutien 🙏</h3>
+  <div class="panel" id="don-en-ligne" style="padding:0; overflow:hidden;">
+    <div style="padding:22px 22px 0 22px;">
+      <span class="hero-badge">Paiement sécurisé</span>
+      <h2 style="margin-top:10px;">Faire un don en ligne</h2>
       <p class="muted" style="margin-bottom:0;">
-        Votre générosité aide les jeunes à grandir, vivre la fraternité et participer aux activités du groupe.
+        Le don se fait directement ci-dessous, sans quitter le site,
+        via le formulaire sécurisé HelloAsso.
       </p>
     </div>
 
-    <iframe
-      id="haWidget"
-      title="HelloAsso - Formulaire de don"
-      allowtransparency="true"
-      scrolling="auto"
-      src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget"
-      style="width:100%; height:750px; border:none; border-radius:18px; background:#fff;"
-      onload="window.addEventListener('message', function(e) {
-        if (!String(e.origin).includes('helloasso.com')) return;
-        if (!e.data || typeof e.data.height === 'undefined') return;
-        const dataHeight = parseInt(e.data.height, 10);
-        const haWidgetElement = document.getElementById('haWidget');
-        if (haWidgetElement && dataHeight > 100) {
-          haWidgetElement.style.height = dataHeight + 'px';
-        }
-      })">
-    </iframe>
-  </div>
+    <div style="padding:18px 22px 22px 22px;">
+      <div style="
+        border:1px solid var(--border);
+        border-radius:22px;
+        overflow:hidden;
+        background:rgba(255,255,255,.04);
+        box-shadow: var(--shadow);
+      ">
+        <iframe
+          id="haWidget"
+          title="HelloAsso - Formulaire de don"
+          allowtransparency="true"
+          scrolling="auto"
+          src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget"
+          style="width:100%; height:760px; border:none; display:block; background:#fff;"
+          loading="lazy">
+        </iframe>
+      </div>
 
-  <div class="panel">
-    <h2>Compteur de collecte</h2>
-    <p class="muted">
-      Suivez l’avancement de la campagne en temps réel.
-    </p>
-
-    <div style="display:flex; justify-content:center; margin-top:12px;">
-      <iframe
-        id="haWidgetCounter"
-        title="HelloAsso - Compteur collecte"
-        allowtransparency="true"
-        src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget-compteur"
-        style="width:350px; max-width:100%; height:120px; border:none; border-radius:16px; background:#fff; display:block;"
-        scrolling="no">
-      </iframe>
+      <p class="muted" style="margin-top:12px; margin-bottom:0;">
+        Collecte organisée pour le <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>.
+      </p>
     </div>
   </div>
+</section>
 
-  <!-- STRIPE CACHÉ -->
-  <div class="panel" style="display:none;" id="stripe-donation">
-    <h2>Don par carte (Stripe)</h2>
-    <p class="muted">Paiement sécurisé via Stripe Checkout.</p>
+<section class="panel" style="margin-top:18px;">
+  <div class="row-between" style="gap:18px; align-items:center; flex-wrap:wrap;">
+    <div style="max-width:760px;">
+      <h2>Un petit geste, un vrai impact</h2>
+      <p class="muted" style="margin-bottom:0;">
+        Votre générosité aide les jeunes à grandir, vivre la fraternité,
+        partir en camp et participer pleinement aux activités du groupe.
+      </p>
+    </div>
 
-    <form method="post" action="{{ url_for('donation_checkout') }}" class="form">
-      <label>Montant (en €)</label>
-      <input type="number" name="amount_eur" min="1" max="5000" value="10" required>
-      <button class="btn" type="submit">Payer en ligne</button>
-    </form>
-
-    {% if not stripe_public_key %}
-      <p class="muted">⚠️ Stripe n’est pas configuré.</p>
-    {% endif %}
+    <div class="cta" style="margin-top:0;">
+      <a class="btn" href="#don-en-ligne" onclick="document.getElementById('don-en-ligne').scrollIntoView({behavior:'smooth', block:'start'}); return false;">
+        Donner maintenant
+      </a>
+    </div>
   </div>
+</section>
 
+<!-- STRIPE CACHÉ -->
+<div class="panel" style="display:none;" id="stripe-donation">
+  <h2>Don par carte (Stripe)</h2>
+  <p class="muted">Paiement sécurisé via Stripe Checkout.</p>
+
+  <form method="post" action="{{ url_for('donation_checkout') }}" class="form">
+    <label>Montant (en €)</label>
+    <input type="number" name="amount_eur" min="1" max="5000" value="10" required>
+    <button class="btn" type="submit">Payer en ligne</button>
+  </form>
+
+  {% if not stripe_public_key %}
+    <p class="muted">⚠️ Stripe n’est pas configuré.</p>
+  {% endif %}
 </div>
 
 <script>
@@ -191,22 +186,11 @@
     if (!e.data || typeof e.data.height === "undefined") return;
 
     const height = parseInt(e.data.height, 10);
-    if (!height || height < 50) return;
+    if (!height || height < 100) return;
 
     const mainWidget = document.getElementById("haWidget");
-    const counterWidget = document.getElementById("haWidgetCounter");
-    const vignetteWidget = document.getElementById("haWidgetVignette");
-
     if (mainWidget && height > 300) {
       mainWidget.style.height = height + "px";
-    }
-
-    if (vignetteWidget && height > 200 && height < 700) {
-      vignetteWidget.style.height = height + "px";
-    }
-
-    if (counterWidget && height > 50 && height < 220) {
-      counterWidget.style.height = height + "px";
     }
   });
 </script>

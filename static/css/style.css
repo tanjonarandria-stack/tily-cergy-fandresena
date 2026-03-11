@@ -796,3 +796,35 @@ select:focus{
 @media (max-width: 520px){
   .photos{grid-template-columns:1fr}
 }
+
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(124,240,199,.28);
+  background:rgba(124,240,199,.10);
+  color:var(--text);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.2px;
+}
+
+@media (max-width: 980px){
+  #don-en-ligne{
+    order:-1;
+  }
+}
+
+@media (max-width: 640px){
+  #don-en-ligne > div:first-child,
+  #don-en-ligne > div:last-child{
+    padding-left:14px !important;
+    padding-right:14px !important;
+  }
+
+  #don-en-ligne iframe{
+    min-height:720px;
+  }
+}
