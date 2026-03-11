@@ -73,13 +73,13 @@
     </p>
   </div>
 
-  <div class="panel" id="don-en-ligne" style="padding:0; overflow:hidden;">
+  <div class="panel" style="padding:0; overflow:hidden;">
     <div style="padding:22px 22px 0 22px;">
       <span class="hero-badge">Paiement sécurisé</span>
-      <h2 style="margin-top:10px;">Faire un don en ligne</h2>
+      <h2 style="margin-top:10px;">Contribuer au projet</h2>
       <p class="muted" style="margin-bottom:0;">
-        Le don se fait directement ci-dessous, sans quitter le site,
-        via le formulaire sécurisé HelloAsso.
+        Choisissez un montant ci-dessous, puis accédez au formulaire sécurisé
+        pour finaliser votre don directement sur notre site.
       </p>
     </div>
 
@@ -88,42 +88,93 @@
         border:1px solid var(--border);
         border-radius:22px;
         overflow:hidden;
-        background:rgba(255,255,255,.04);
+        background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
         box-shadow: var(--shadow);
+        padding:18px;
       ">
-        <iframe
-          id="haWidget"
-          title="HelloAsso - Formulaire de don"
-          allowtransparency="true"
-          scrolling="auto"
-          src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget"
-          style="width:100%; height:760px; border:none; display:block; background:#fff;"
-          loading="lazy">
-        </iframe>
-      </div>
+        <div class="row-between" style="align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+          <div>
+            <p class="muted" style="margin:0 0 6px 0;">Paiement directement sur notre site</p>
+            <strong style="font-size:18px;">Don sécurisé</strong>
+          </div>
 
-      <p class="muted" style="margin-top:12px; margin-bottom:0;">
-        Collecte organisée pour le <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>.
-      </p>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span style="padding:7px 10px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,.05); font-size:12px; font-weight:700;">CB</span>
+            <span style="padding:7px 10px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,.05); font-size:12px; font-weight:700;">VISA</span>
+            <span style="padding:7px 10px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,.05); font-size:12px; font-weight:700;">Mastercard</span>
+          </div>
+        </div>
+
+        <form id="donation-ui-form" class="form" onsubmit="return false;">
+          <label>Choisir un montant</label>
+
+          <div class="grid-2" style="margin-top:6px;">
+            <button type="button" class="amount-card active" data-amount="20">20 €</button>
+            <button type="button" class="amount-card" data-amount="50">50 €</button>
+            <button type="button" class="amount-card" data-amount="100">100 €</button>
+            <button type="button" class="amount-card" data-amount="200">200 €</button>
+          </div>
+
+          <div style="margin-top:12px;">
+            <label for="custom-amount">Ou saisir un autre montant</label>
+            <input id="custom-amount" type="number" min="1" step="1" placeholder="À partir de 1 €">
+          </div>
+
+          <div class="callout" style="margin-top:14px;">
+            <div class="row-between" style="gap:10px; flex-wrap:wrap;">
+              <strong>Montant sélectionné :</strong>
+              <strong><span id="selected-amount">20</span> €</strong>
+            </div>
+            <p class="muted" style="margin:8px 0 0 0;">
+              Le paiement final s’effectue via le formulaire sécurisé HelloAsso.
+            </p>
+          </div>
+
+          <div class="cta" style="margin-top:14px;">
+            <button type="button" class="btn" id="go-to-payment">
+              Continuer vers le paiement
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="panel" style="margin-top:18px;">
-  <div class="row-between" style="gap:18px; align-items:center; flex-wrap:wrap;">
-    <div style="max-width:760px;">
-      <h2>Un petit geste, un vrai impact</h2>
-      <p class="muted" style="margin-bottom:0;">
-        Votre générosité aide les jeunes à grandir, vivre la fraternité,
-        partir en camp et participer pleinement aux activités du groupe.
-      </p>
+<section class="panel" id="don-en-ligne" style="margin-top:18px; padding:0; overflow:hidden; display:none;">
+  <div style="padding:22px 22px 0 22px;">
+    <span class="hero-badge">Formulaire sécurisé HelloAsso</span>
+    <h2 style="margin-top:10px;">Finaliser le don</h2>
+    <p class="muted" style="margin-bottom:0;">
+      Vous êtes sur le formulaire officiel sécurisé de HelloAsso.
+      Vérifiez le montant, renseignez vos coordonnées puis validez votre paiement.
+    </p>
+  </div>
+
+  <div style="padding:18px 22px 22px 22px;">
+    <div style="
+      max-width:860px;
+      margin:0 auto;
+      border:1px solid var(--border);
+      border-radius:22px;
+      overflow:hidden;
+      background:rgba(255,255,255,.04);
+      box-shadow: var(--shadow);
+    ">
+      <iframe
+        id="haWidget"
+        title="HelloAsso - Formulaire de don"
+        allowtransparency="true"
+        scrolling="auto"
+        src="https://www.helloasso.com/associations/eeudf-paris-nord-ouest/collectes/les-eeudf-cergy-tily-cergy-ont-besoin-de-vous/widget"
+        style="width:100%; height:760px; border:none; display:block; background:#fff;"
+        loading="lazy">
+      </iframe>
     </div>
 
-    <div class="cta" style="margin-top:0;">
-      <a class="btn" href="#don-en-ligne" onclick="document.getElementById('don-en-ligne').scrollIntoView({behavior:'smooth', block:'start'}); return false;">
-        Donner maintenant
-      </a>
-    </div>
+    <p class="muted" style="margin-top:12px; margin-bottom:0;">
+      Collecte organisée pour le <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>.
+    </p>
   </div>
 </section>
 
@@ -142,6 +193,35 @@
     <p class="muted">⚠️ Stripe n’est pas configuré.</p>
   {% endif %}
 </div>
+
+<style>
+  .amount-card{
+    padding:14px 16px;
+    border-radius:16px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:var(--text);
+    font-weight:800;
+    font-size:16px;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .amount-card:hover{
+    transform:translateY(-1px);
+    background:rgba(255,255,255,.07);
+  }
+  .amount-card.active{
+    border-color:rgba(124,240,199,.45);
+    background:rgba(124,240,199,.12);
+  }
+
+  @media (max-width: 640px){
+    .amount-card{
+      font-size:15px;
+      padding:12px;
+    }
+  }
+</style>
 
 <script>
   (function () {
@@ -191,6 +271,52 @@
     const mainWidget = document.getElementById("haWidget");
     if (mainWidget && height > 300) {
       mainWidget.style.height = height + "px";
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const amountButtons = document.querySelectorAll(".amount-card");
+    const customAmount = document.getElementById("custom-amount");
+    const selectedAmount = document.getElementById("selected-amount");
+    const goToPayment = document.getElementById("go-to-payment");
+    const donationSection = document.getElementById("don-en-ligne");
+
+    let currentAmount = 20;
+
+    function updateAmount(value) {
+      currentAmount = value;
+      if (selectedAmount) {
+        selectedAmount.textContent = value;
+      }
+    }
+
+    amountButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        amountButtons.forEach((b) => b.classList.remove("active"));
+        button.classList.add("active");
+        if (customAmount) customAmount.value = "";
+        updateAmount(parseInt(button.dataset.amount, 10));
+      });
+    });
+
+    if (customAmount) {
+      customAmount.addEventListener("input", function () {
+        const value = parseInt(customAmount.value, 10);
+        amountButtons.forEach((b) => b.classList.remove("active"));
+        if (!isNaN(value) && value > 0) {
+          updateAmount(value);
+        }
+      });
+    }
+
+    if (goToPayment && donationSection) {
+      goToPayment.addEventListener("click", function () {
+        donationSection.style.display = "block";
+
+        setTimeout(() => {
+          donationSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      });
     }
   });
 </script>
