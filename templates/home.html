@@ -16,7 +16,7 @@
           Un groupe scout enraciné dans la foi chrétienne, au service des jeunes,
           de la fraternité et des projets qui font grandir.
         </p>
-        <div class="cta">
+        <div class="cta hero-cta">
           <a class="btn" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
           <a class="btn secondary" href="{{ url_for('contact') }}">Nous contacter</a>
         </div>
@@ -29,7 +29,7 @@
            style="background-image:url('{{ url_for('static', filename='img/news.png') }}');"></div>
       <div class="hero-content">
         <span class="hero-badge">Vie du groupe</span>
-        <h2>Dernières actualités</h2>
+        <h2 class="hero-title">Dernières actualités</h2>
 
         {% if latest %}
           <div class="news-preview-grid">
@@ -44,8 +44,9 @@
             {% endfor %}
           </div>
 
-          <div class="cta">
+          <div class="cta hero-cta">
             <a class="btn" href="{{ url_for('actus') }}">Voir toutes les actualités</a>
+            <a class="btn secondary" href="{{ url_for('contact') }}">Nous écrire</a>
           </div>
         {% else %}
           <div class="hero-panel">
@@ -61,31 +62,28 @@
            style="background-image:url('{{ url_for('static', filename='img/soutien.png') }}');"></div>
       <div class="hero-content">
         <span class="hero-badge">Soutien & solidarité</span>
-        <h2>Soutenir Tily Cergy</h2>
+        <h2 class="hero-title">Soutenir Tily Cergy</h2>
         <p class="lead hero-lead">
           Vos dons aident le <strong>groupe local EEUdF Cergy – Tily Cergy Fandresena</strong>
           à financer les activités, les camps, le matériel et l’accompagnement des jeunes.
         </p>
 
-        <div class="hero-panel" style="max-width:760px;">
-          <div class="row-between" style="gap:14px; align-items:center; margin-bottom:10px; flex-wrap:wrap;">
+        <div class="hero-panel hero-progress-panel">
+          <div class="row-between hero-progress-head">
             <strong><span id="hero-don-raised">0</span> € collectés</strong>
             <span class="muted">Objectif : <strong>1500 €</strong></span>
           </div>
 
-          <div style="width:100%; height:14px; background:rgba(255,255,255,.10); border-radius:999px; overflow:hidden; border:1px solid rgba(255,255,255,.18);">
-            <div
-              id="hero-progress-bar-fill"
-              style="width:0%; height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(124,240,199,.95), rgba(155,182,255,.95)); transition:width 1.2s ease;">
-            </div>
+          <div class="progress-shell">
+            <div id="hero-progress-bar-fill" class="progress-fill"></div>
           </div>
 
-          <p class="muted" style="margin-top:10px; margin-bottom:0;">
+          <p class="muted hero-progress-text">
             <span id="hero-don-percent">0</span>% de l’objectif atteint • Chaque don compte vraiment
           </p>
         </div>
 
-        <div class="support-card" style="margin-top:14px;">
+        <div class="support-card hero-support-card">
           <iframe
             id="haWidgetHome"
             title="HelloAsso - Don Tily Cergy"
@@ -96,7 +94,7 @@
           ></iframe>
         </div>
 
-        <div class="cta">
+        <div class="cta hero-cta">
           <a class="btn" href="{{ url_for('nous_soutenir') }}">Faire un don</a>
           <a class="btn secondary" href="{{ url_for('nous_soutenir') }}">Voir la collecte</a>
         </div>
@@ -139,11 +137,8 @@
         <span class="muted">Objectif : <strong>1500 €</strong></span>
       </div>
 
-      <div style="width:100%; height:16px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; border:1px solid var(--border);">
-        <div
-          id="home-progress-bar-fill"
-          style="width:0%; height:100%; border-radius:999px; background:linear-gradient(90deg, rgba(124,240,199,.95), rgba(155,182,255,.95)); transition:width 1.2s ease;">
-        </div>
+      <div class="progress-shell progress-shell-home">
+        <div id="home-progress-bar-fill" class="progress-fill"></div>
       </div>
 
       <p class="muted" style="margin-top:10px;">
