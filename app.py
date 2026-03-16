@@ -1,7 +1,7 @@
 import os
 import logging
 
-from flask import Flask, render_template, request, redirect, url_for, flash, current_app
+from flask import Flask, render_template, request, redirect, url_for, flash, current_app, Response, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -16,7 +16,7 @@ from models import db, User, NewsPost, Album, Photo, ContactMessage
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
-SEO_PAGES = {
+BASE_SEO_PAGES = {
     "scout-cergy": {
         "title": "Scout Cergy – Tily Cergy Fandresena | Scouts EEUdF Cergy",
         "headline": "Scout Cergy",
@@ -53,6 +53,57 @@ SEO_PAGES = {
         "keywords": "scout protestant cergy, scout chrétien cergy, tily cergy, eeudf cergy",
     },
 }
+
+LOCAL_SEO_TARGETS = [
+    ("scout-cergy-pontoise", "Scout Cergy-Pontoise", "scout cergy pontoise, groupe scout cergy pontoise, scoutisme cergy pontoise"),
+    ("scout-pontoise", "Scout Pontoise", "scout pontoise, groupe scout pontoise, scoutisme pontoise"),
+    ("scout-osny", "Scout Osny", "scout osny, groupe scout osny, scoutisme osny"),
+    ("scout-vaureal", "Scout Vauréal", "scout vaureal, groupe scout vaureal, scoutisme vaureal"),
+    ("scout-jouy-le-moutier", "Scout Jouy-le-Moutier", "scout jouy le moutier, groupe scout jouy le moutier"),
+    ("scout-eragny", "Scout Éragny", "scout eragny, groupe scout eragny, scoutisme eragny"),
+    ("scout-saint-ouen-laumone", "Scout Saint-Ouen-l’Aumône", "scout saint ouen l'aumone, groupe scout saint ouen l'aumone"),
+    ("scout-herblay", "Scout Herblay", "scout herblay, groupe scout herblay"),
+    ("scout-conflans-sainte-honorine", "Scout Conflans-Sainte-Honorine", "scout conflans sainte honorine, groupe scout conflans"),
+    ("scout-autour-de-cergy", "Scout autour de Cergy", "scout autour de cergy, groupe scout autour de cergy"),
+    ("scout-val-doise", "Scout Val-d’Oise", "scout val d'oise, groupe scout val d'oise, scoutisme val d'oise"),
+    ("scout-protestant-val-doise", "Scout protestant Val-d’Oise", "scout protestant val d'oise, scout chrétien val d'oise"),
+    ("scout-chretien-cergy-pontoise", "Scout chrétien Cergy-Pontoise", "scout chrétien cergy pontoise, scout protestant cergy pontoise"),
+    ("camp-scout-cergy", "Camp scout Cergy", "camp scout cergy, camp jeunesse cergy"),
+    ("camp-scout-cergy-pontoise", "Camp scout Cergy-Pontoise", "camp scout cergy pontoise, camp jeunes cergy pontoise"),
+    ("activites-jeunes-cergy", "Activités jeunes Cergy", "activités jeunes cergy, activité jeunesse cergy, groupe jeunes cergy"),
+    ("activites-jeunes-val-doise", "Activités jeunes Val-d’Oise", "activités jeunes val d'oise, jeunesse val d'oise"),
+    ("association-scout-cergy", "Association scout Cergy", "association scout cergy, association jeunesse cergy"),
+    ("association-scout-val-doise", "Association scout Val-d’Oise", "association scout val d'oise, association jeunesse val d'oise"),
+    ("week-end-scout-cergy", "Week-end scout Cergy", "week end scout cergy, sortie scout cergy"),
+    ("sorties-jeunes-cergy", "Sorties jeunes Cergy", "sorties jeunes cergy, activités extérieures cergy"),
+    ("scout-enfants-cergy", "Scout enfants Cergy", "scout enfants cergy, activités enfants cergy"),
+    ("scout-ados-cergy", "Scout ados Cergy", "scout ados cergy, activités ados cergy"),
+    ("groupe-jeunes-cergy", "Groupe de jeunes Cergy", "groupe de jeunes cergy, jeunesse cergy"),
+    ("scout-foi-chretienne-cergy", "Scout et foi chrétienne à Cergy", "scout foi chrétienne cergy, scout chrétien cergy"),
+    ("scout-service-cergy", "Scout service Cergy", "service scout cergy, projet solidaire cergy"),
+    ("scout-fraternite-cergy", "Scout fraternité Cergy", "fraternité cergy jeunes, scout fraternité cergy"),
+    ("eeudf-val-doise", "EEUdF Val-d’Oise", "eeudf val d'oise, scouts eeudf val d'oise"),
+    ("tily-cergy-pontoise", "Tily Cergy-Pontoise", "tily cergy pontoise, tily val d'oise"),
+    ("rejoindre-scout-cergy", "Rejoindre un groupe scout à Cergy", "rejoindre scout cergy, inscription scout cergy"),
+]
+
+SEO_PAGES = dict(BASE_SEO_PAGES)
+
+for slug, label, keywords in LOCAL_SEO_TARGETS:
+    SEO_PAGES[slug] = {
+        "title": f"{label} – Tily Cergy Fandresena",
+        "headline": label,
+        "intro": (
+            "Tily Cergy Fandresena accueille les jeunes de Cergy, Cergy-Pontoise et du Val-d’Oise "
+            "dans un cadre scout chrétien, fraternel et éducatif, avec des activités régulières, "
+            "des camps, des projets solidaires et des temps forts."
+        ),
+        "meta_description": (
+            f"{label} : découvrez Tily Cergy Fandresena, groupe scout EEUdF proche de Cergy "
+            "et du Val-d’Oise, avec activités, camps et projets pour les jeunes."
+        ),
+        "keywords": keywords,
+    }
 
 
 def allowed_file(filename: str) -> bool:
@@ -134,6 +185,17 @@ def create_app():
 
     db.init_app(app)
 
+    @app.after_request
+    def add_cache_headers(resp):
+        if (
+            request.path in ("/actus", "/espace", "/albums", "/membres")
+            or request.path.startswith("/album")
+            or request.path.startswith("/admin")
+            or request.path.startswith("/staff")
+        ):
+            resp.headers["Cache-Control"] = "no-store"
+        return resp
+
     login_manager = LoginManager()
     login_manager.login_view = "login"
     login_manager.init_app(app)
@@ -181,20 +243,84 @@ def create_app():
         except Exception:
             app.logger.exception("Admin seed skipped (tables not ready).")
 
+    # ---------------- SEO TECHNIQUE ----------------
+    @app.get("/google3e19d625fb44c180.html")
+    def google_verification_file():
+        return send_from_directory("static", "google3e19d625fb44c180.html")
+
+    @app.get("/robots.txt")
+    def robots_txt():
+        content = """User-agent: *
+Allow: /
+
+Sitemap: https://tily-cergy-fandresena.onrender.com/sitemap.xml
+"""
+        return Response(content, mimetype="text/plain")
+
+    @app.get("/sitemap.xml")
+    def sitemap():
+        base_pages = [
+            url_for("home", _external=True),
+            url_for("actus", _external=True),
+            url_for("nous_connaitre", _external=True),
+            url_for("nous_soutenir", _external=True),
+            url_for("members_entry", _external=True),
+            url_for("contact", _external=True),
+        ]
+
+        seo_pages = [
+            url_for("seo_page", slug=slug, _external=True)
+            for slug in SEO_PAGES.keys()
+        ]
+
+        all_pages = base_pages + seo_pages
+
+        xml = ['<?xml version="1.0" encoding="UTF-8"?>']
+        xml.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+
+        for page in all_pages:
+            xml.append("<url>")
+            xml.append(f"<loc>{page}</loc>")
+            xml.append("</url>")
+
+        xml.append("</urlset>")
+
+        return Response("\n".join(xml), mimetype="application/xml")
+
     # ---------------- PUBLIC ----------------
     @app.get("/")
     def home():
         latest = NewsPost.query.order_by(NewsPost.created_at.desc()).limit(3).all()
-        return render_template("home.html", latest=latest)
+        return render_template(
+            "home.html",
+            latest=latest,
+            meta_title="Tily Cergy Fandresena – Scouts EEUdF Cergy",
+            meta_description="Tily Cergy Fandresena est un groupe scout EEUdF basé à Cergy. Activités jeunes, camps scouts, projets solidaires et vie fraternelle.",
+            meta_keywords="scout cergy, tily cergy, eeudf cergy, scoutisme cergy, scout protestant cergy",
+            canonical_url=url_for("home", _external=True),
+        )
 
     @app.get("/actus")
     def actus():
         posts = NewsPost.query.order_by(NewsPost.created_at.desc()).all()
-        return render_template("actus.html", posts=posts)
+        return render_template(
+            "actus.html",
+            posts=posts,
+            meta_title="Actualités – Tily Cergy Fandresena",
+            meta_description="Retrouvez les actualités, événements, activités et projets de Tily Cergy Fandresena.",
+            meta_keywords="actualités scout cergy, événements scout cergy, tily cergy actus",
+            canonical_url=url_for("actus", _external=True),
+        )
 
     @app.get("/nous-connaitre")
     def nous_connaitre():
-        return render_template("nous_connaitre.html")
+        return render_template(
+            "nous_connaitre.html",
+            meta_title="Nous connaître – Tily Cergy Fandresena",
+            meta_description="Découvrez Tily Cergy Fandresena, groupe scout EEUdF à Cergy, ses valeurs, sa mission et ses activités.",
+            meta_keywords="tily cergy, scout cergy, eeudf cergy, groupe scout cergy",
+            canonical_url=url_for("nous_connaitre", _external=True),
+        )
 
     @app.get("/nous-soutenir")
     def nous_soutenir():
@@ -202,11 +328,21 @@ def create_app():
             "nous_soutenir.html",
             stripe_public_key=app.config.get("STRIPE_PUBLIC_KEY", ""),
             external_url=app.config.get("DONATION_EXTERNAL_URL", ""),
+            meta_title="Nous soutenir – Tily Cergy Fandresena",
+            meta_description="Soutenez les activités, camps et projets de Tily Cergy Fandresena à Cergy.",
+            meta_keywords="don scout cergy, soutenir tily cergy, eeudf cergy dons",
+            canonical_url=url_for("nous_soutenir", _external=True),
         )
 
     @app.get("/membres")
     def members_entry():
-        return render_template("membres.html")
+        return render_template(
+            "membres.html",
+            meta_title="Espace membres – Tily Cergy Fandresena",
+            meta_description="Accédez à l’espace membres de Tily Cergy Fandresena pour la connexion, l’inscription et les outils internes.",
+            meta_keywords="espace membres tily cergy, connexion scout cergy, inscription tily cergy",
+            canonical_url=url_for("members_entry", _external=True),
+        )
 
     @app.get("/<slug>")
     def seo_page(slug):
@@ -246,7 +382,13 @@ def create_app():
             flash("Message envoyé ✅ (il sera visible par l’admin).", "success")
             return redirect(url_for("contact"))
 
-        return render_template("contact.html")
+        return render_template(
+            "contact.html",
+            meta_title="Contact – Tily Cergy Fandresena",
+            meta_description="Contactez Tily Cergy Fandresena pour des informations sur les activités, inscriptions, partenariats et projets.",
+            meta_keywords="contact scout cergy, contacter tily cergy, eeudf cergy contact",
+            canonical_url=url_for("contact", _external=True),
+        )
 
     # ---------------- AUTH ----------------
     @app.route("/register", methods=["GET", "POST"])
