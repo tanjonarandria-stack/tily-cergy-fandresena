@@ -1,80 +1,256 @@
 {% extends "base.html" %}
+
 {% block content %}
+<section class="page-hero seo-hero">
+  <div class="container">
+    <span class="hero-badge">Scoutisme • Jeunes • Cergy</span>
+    <h1>{{ seo.headline }}</h1>
+    <p class="lead">{{ seo.intro }}</p>
 
-<section class="hero-card">
-  <h1>{{ seo.headline }}</h1>
-  <p class="lead">{{ seo.intro }}</p>
-
-  <div class="cta">
-    <a class="btn" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
-    <a class="btn secondary" href="{{ url_for('contact') }}">Nous contacter</a>
+    <div class="cta-row">
+      <a class="btn" href="{{ url_for('contact') }}">Nous contacter</a>
+      <a class="btn secondary" href="{{ url_for('nous_connaitre') }}">Nous connaître</a>
+    </div>
   </div>
 </section>
 
-<section class="grid-2" style="margin-top:18px;">
-  <div class="panel">
-    <h2>Un groupe scout à Cergy</h2>
-    <p>
-      Tily Cergy Fandresena accompagne les jeunes à travers le scoutisme, la vie en équipe,
-      les activités éducatives, les week-ends, les camps et les projets de service.
-    </p>
-    <p>
-      Notre groupe veut aider les jeunes à grandir dans la fraternité, la responsabilité,
-      le service et la foi chrétienne.
-    </p>
-  </div>
+<section class="section">
+  <div class="container grid-2">
+    <article class="panel">
+      <h2>
+        {% if slug == "scout-cergy" %}
+          Un groupe scout à Cergy pour grandir ensemble
+        {% elif slug == "eeudf-cergy" %}
+          Les EEUdF à Cergy
+        {% elif slug == "scoutisme-cergy" %}
+          Le scoutisme à Cergy, concrètement
+        {% elif slug == "scout-cergy-pontoise" %}
+          Un groupe scout proche de Cergy-Pontoise
+        {% elif slug == "scout-val-doise" %}
+          Un scoutisme vivant dans le Val-d’Oise
+        {% elif slug == "camp-scout-cergy" %}
+          Des camps scouts éducatifs et fraternels
+        {% elif slug == "activites-jeunes-cergy" %}
+          Des activités régulières pour les jeunes
+        {% elif slug == "rejoindre-scout-cergy" %}
+          Comment rejoindre notre groupe scout
+        {% else %}
+          Notre groupe scout
+        {% endif %}
+      </h2>
 
-  <div class="panel">
-    <h2>Pourquoi rejoindre Tily Cergy Fandresena ?</h2>
-    <ul>
-      <li>Activités régulières pour les jeunes</li>
-      <li>Camps et sorties</li>
-      <li>Projets solidaires</li>
-      <li>Vie de groupe et esprit de fraternité</li>
-      <li>Enracinement dans la foi chrétienne</li>
-    </ul>
+      {% if slug == "scout-cergy" %}
+        <p>
+          Tily Cergy Fandresena propose à Cergy un cadre scout où les jeunes peuvent
+          grandir, apprendre à vivre ensemble, prendre des responsabilités et participer
+          à des projets utiles. Le groupe s’inscrit dans l’esprit des EEUdF et met en avant
+          la fraternité, le service, la vie d’équipe et la progression personnelle.
+        </p>
+        <p>
+          Tout au long de l’année, les jeunes vivent des activités variées, des temps forts,
+          des sorties et des camps. Le scoutisme permet d’apprendre par l’action,
+          dans une ambiance bienveillante et motivante.
+        </p>
+
+      {% elif slug == "eeudf-cergy" %}
+        <p>
+          Les EEUdF, Éclaireuses et Éclaireurs Unionistes de France, proposent un scoutisme
+          protestant ouvert, éducatif et tourné vers l’épanouissement des jeunes.
+          À Cergy, Tily Cergy Fandresena fait vivre cet esprit à travers des activités
+          régulières, des week-ends, des camps et des projets de groupe.
+        </p>
+        <p>
+          Le projet éducatif repose sur la confiance, la responsabilité, l’engagement
+          et la vie fraternelle. Chaque jeune peut y trouver sa place et avancer à son rythme.
+        </p>
+
+      {% elif slug == "scoutisme-cergy" %}
+        <p>
+          Le scoutisme à Cergy, ce sont des activités de plein air, des jeux, des projets,
+          des temps d’équipe, des services, des découvertes et des camps. C’est une manière
+          d’aider les jeunes à devenir plus autonomes, solidaires et confiants.
+        </p>
+        <p>
+          Chez Tily Cergy Fandresena, le scoutisme se vit dans la durée, avec une vraie
+          progression éducative et une attention portée à chacun.
+        </p>
+
+      {% elif slug == "scout-cergy-pontoise" %}
+        <p>
+          Si vous cherchez un groupe scout autour de Cergy-Pontoise, Tily Cergy Fandresena
+          peut accueillir des jeunes venant de Cergy et des communes voisines.
+          Le groupe propose un cadre éducatif, fraternel et dynamique, avec des activités
+          tout au long de l’année.
+        </p>
+        <p>
+          C’est une belle manière de découvrir le scoutisme, de vivre des expériences fortes
+          en équipe et de participer à des projets qui font grandir.
+        </p>
+
+      {% elif slug == "scout-val-doise" %}
+        <p>
+          Pour les familles du Val-d’Oise qui recherchent un groupe scout chrétien
+          et éducatif, Tily Cergy Fandresena propose des activités adaptées aux jeunes,
+          des camps, des sorties et des temps de vie en équipe.
+        </p>
+        <p>
+          Le groupe met l’accent sur la fraternité, le sens du service, la progression
+          personnelle et la joie de vivre ensemble.
+        </p>
+
+      {% elif slug == "camp-scout-cergy" %}
+        <p>
+          Les camps scouts sont des moments forts de l’année. Ils permettent aux jeunes
+          de vivre une aventure collective, de gagner en autonomie, de développer leur sens
+          des responsabilités et de créer de vrais souvenirs.
+        </p>
+        <p>
+          Chez Tily Cergy Fandresena, les camps s’inscrivent dans une démarche éducative :
+          vie d’équipe, organisation, entraide, service, découvertes et progression.
+        </p>
+
+      {% elif slug == "activites-jeunes-cergy" %}
+        <p>
+          Les activités proposées aux jeunes à Cergy peuvent prendre plusieurs formes :
+          rencontres de groupe, jeux, sorties, projets solidaires, week-ends et camps.
+          Le but est de permettre à chacun de participer, de progresser et de vivre
+          une vraie dynamique collective.
+        </p>
+        <p>
+          Tily Cergy Fandresena souhaite offrir un cadre stimulant, bienveillant et porteur
+          de sens pour les jeunes et leurs familles.
+        </p>
+
+      {% elif slug == "rejoindre-scout-cergy" %}
+        <p>
+          Rejoindre un groupe scout à Cergy, c’est entrer dans une aventure humaine
+          faite de découvertes, de progression, de fraternité et d’engagement.
+          Tily Cergy Fandresena accueille les jeunes et peut répondre aux questions
+          des familles sur le fonctionnement du groupe et les activités proposées.
+        </p>
+        <p>
+          Si vous souhaitez en savoir plus, le plus simple est de prendre contact
+          avec nous pour découvrir la vie du groupe et les possibilités d’inscription.
+        </p>
+
+      {% else %}
+        <p>
+          Tily Cergy Fandresena propose un scoutisme éducatif, fraternel et enraciné
+          dans des valeurs fortes, avec des activités, des camps et des projets pour les jeunes.
+        </p>
+      {% endif %}
+    </article>
+
+    <aside class="panel panel-soft">
+      <h2>Pourquoi nous rejoindre ?</h2>
+      <ul class="seo-list">
+        <li>Des activités régulières pour les jeunes</li>
+        <li>Une vie d’équipe et de fraternité</li>
+        <li>Des camps et temps forts dans l’année</li>
+        <li>Des projets éducatifs et solidaires</li>
+        <li>Un cadre scout inspiré des EEUdF</li>
+      </ul>
+
+      <div class="mini-cta-box">
+        <p><strong>Une question ?</strong></p>
+        <p>Nous pouvons vous renseigner sur les activités, l’accueil des jeunes et la vie du groupe.</p>
+        <a class="btn" href="{{ url_for('contact') }}">Prendre contact</a>
+      </div>
+    </aside>
   </div>
 </section>
 
-<section class="panel" style="margin-top:18px;">
-  <h2>Le scoutisme à Cergy avec les EEUdF</h2>
-  <p>
-    Le scoutisme aide les jeunes à devenir plus autonomes, plus solidaires et plus responsables.
-    À Tily Cergy Fandresena, nous organisons des activités adaptées, des temps forts, des camps
-    et des projets qui permettent d’apprendre en faisant.
-  </p>
+<section class="section section-soft">
+  <div class="container grid-3">
+    <div class="panel">
+      <h2>Nos activités</h2>
+      <p>
+        Sorties, jeux, week-ends, projets collectifs, temps de service
+        et camps scouts rythment la vie du groupe tout au long de l’année.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h2>Notre esprit</h2>
+      <p>
+        Nous cherchons à faire grandir les jeunes dans la confiance,
+        la responsabilité, la fraternité et le goût de l’engagement.
+      </p>
+    </div>
+
+    <div class="panel">
+      <h2>Pour les familles</h2>
+      <p>
+        Nous restons disponibles pour présenter le groupe, expliquer son fonctionnement
+        et répondre aux questions sur l’inscription ou les activités.
+      </p>
+    </div>
+  </div>
 </section>
 
 {% if latest %}
-<section style="margin-top:18px;">
-  <h2>Nos dernières actualités</h2>
-  <div class="cards-grid">
-    {% for post in latest %}
-      <article class="card">
-        {% if post.image_path %}
-          <img class="card-img" src="{{ post.image_path }}" alt="{{ post.title }}">
-        {% endif %}
-        <div class="card-body">
-          <h3 class="card-title">{{ post.title }}</h3>
-          <p class="muted">{{ post.created_at.strftime("%d/%m/%Y") }}</p>
-          <p>{{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}</p>
-          <a class="btn secondary" href="{{ url_for('actus') }}">Voir les actualités</a>
-        </div>
-      </article>
-    {% endfor %}
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Actualités récentes</h2>
+      <a class="text-link" href="{{ url_for('actus') }}">Voir toutes les actualités</a>
+    </div>
+
+    <div class="news-grid">
+      {% for post in latest %}
+        <article class="panel news-card">
+          {% if post.image_path %}
+            <img
+              src="{{ post.image_path }}"
+              alt="{{ post.title }}"
+              class="news-thumb"
+              loading="lazy"
+            >
+          {% endif %}
+
+          <h3>{{ post.title }}</h3>
+
+          {% if post.created_at %}
+            <p class="muted small">
+              {{ post.created_at.strftime('%d/%m/%Y') }}
+            </p>
+          {% endif %}
+
+          <p>
+            {{ post.content[:180] }}{% if post.content|length > 180 %}...{% endif %}
+          </p>
+
+          {% if post.event_link %}
+            <a class="text-link" href="{{ post.event_link }}" target="_blank" rel="noopener">
+              En savoir plus
+            </a>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endif %}
 
-<section class="callout">
-  <h3>Contact</h3>
-  <p>
-    Pour en savoir plus sur le groupe scout Tily Cergy Fandresena, les activités, les camps
-    ou les projets, rends-toi sur la page contact.
-  </p>
-  <p>
-    <a class="btn" href="{{ url_for('contact') }}">Nous écrire</a>
-  </p>
+<section class="section">
+  <div class="container">
+    <div class="panel seo-bottom-cta">
+      <h2>
+        {% if slug == "rejoindre-scout-cergy" %}
+          Envie de rejoindre le groupe ?
+        {% else %}
+          Découvrir Tily Cergy Fandresena
+        {% endif %}
+      </h2>
+      <p>
+        Pour en savoir plus sur notre groupe scout, nos activités, nos camps ou les modalités
+        d’accueil, vous pouvez nous contacter directement.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="{{ url_for('contact') }}">Nous écrire</a>
+        <a class="btn secondary" href="{{ url_for('nous_connaitre') }}">Découvrir le groupe</a>
+      </div>
+    </div>
+  </div>
 </section>
-
 {% endblock %}
